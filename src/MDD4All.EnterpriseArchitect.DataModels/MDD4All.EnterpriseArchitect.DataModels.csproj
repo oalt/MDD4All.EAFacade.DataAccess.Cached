@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>MDD4All.de</Company>
+    <Description>Performant Non-COM data model for Enterprise Architect implementing API compatible contracts.</Description>
+    <Copyright>MDD4All.de</Copyright>
+    <PackageLicenseUrl>https://github.com/oalt/MDD4All.EnterpriseArchitect.DataModels/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/oalt/MDD4All.EnterpriseArchitect.DataModels</PackageProjectUrl>
+    <PackageTags>EA DataModels</PackageTags>
+    <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">1.0.0.0</Version>
+    <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MDD4All.EnterpriseArchitect.DataModels.Contracts" Version="2.0.0.139" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Interop.EA">
+      <HintPath>..\libs\Interop.EA.dll</HintPath>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+
+</Project>
