@@ -1,12 +1,14 @@
-﻿using MDD4All.EnterpriseArchitect.DataModels.Contracts;
+﻿using MDD4All.EAFacade.DataModels.Contracts;
+using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
 
-namespace MDD4All.EnterpriseArchitect.DataModels
+namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
-    public class TaggedValueDataModel : TaggedValue
+    internal class TaggedValueDataModel : TaggedValue
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public TaggedValueDataModel()
         {
 
@@ -14,12 +16,19 @@ namespace MDD4All.EnterpriseArchitect.DataModels
 
         public TaggedValueDataModel(XElement tObjectPropertiesRow)
         {
-            Name = tObjectPropertiesRow.Element("Property").Value;
-            Notes = tObjectPropertiesRow.Element("Notes").Value;
-            Value = tObjectPropertiesRow.Element("Value").Value;
-            PropertyID = int.Parse(tObjectPropertiesRow.Element("PropertyID").Value);
-            PropertyGUID = tObjectPropertiesRow.Element("ea_guid").Value;
-            ElementID = int.Parse(tObjectPropertiesRow.Element("Object_ID").Value);
+            try
+            {
+                Name = tObjectPropertiesRow.Element("Property").Value;
+                Notes = tObjectPropertiesRow.Element("Notes").Value;
+                Value = tObjectPropertiesRow.Element("Value").Value;
+                PropertyID = int.Parse(tObjectPropertiesRow.Element("PropertyID").Value);
+                PropertyGUID = tObjectPropertiesRow.Element("ea_guid").Value;
+                ElementID = int.Parse(tObjectPropertiesRow.Element("Object_ID").Value);
+            }
+            catch(Exception exception)
+            {
+                logger.Debug(exception);
+            }
         }
 
         public TaggedValueDataModel(EAAPI.TaggedValue apiTaggedValue)

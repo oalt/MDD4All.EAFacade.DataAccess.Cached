@@ -12,8 +12,15 @@
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
   </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="MDD4All.EnterpriseArchitect.DataModels.Contracts" Version="2.0.0.139" />
+    <PackageReference Include="MDD4All.EAFacade.DataModels.Contracts" Version="2.1.0.183" />
+    <PackageReference Include="NLog" Version="4.5.11" />
   </ItemGroup>
 
   <ItemGroup>

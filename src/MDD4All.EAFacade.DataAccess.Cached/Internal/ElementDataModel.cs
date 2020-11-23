@@ -1,12 +1,14 @@
-﻿using MDD4All.EnterpriseArchitect.DataModels.Contracts;
+﻿using MDD4All.EAFacade.DataModels.Contracts;
+using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
 
-namespace MDD4All.EnterpriseArchitect.DataModels
+namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
-    public class ElementDataModel : Element
+    internal class ElementDataModel : Element
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public ElementDataModel()
         {
@@ -25,6 +27,11 @@ namespace MDD4All.EnterpriseArchitect.DataModels
                 Stereotype = tObjectQueryRow.Element("Stereotype").Value;
                 ElementGUID = tObjectQueryRow.Element("ea_guid").Value;
                 ParentID = int.Parse(tObjectQueryRow.Element("ParentID").Value);
+                Created = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
+                Modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
+                ClassifierID = int.Parse(tObjectQueryRow.Element("Classifier").Value);
+                
+                PropertyType = 0;
 
                 int treePos = 0;
 
@@ -36,7 +43,7 @@ namespace MDD4All.EnterpriseArchitect.DataModels
             }
             catch (Exception exception)
             {
-                ;
+                logger.Debug(exception);
             }
         }
 
@@ -50,7 +57,11 @@ namespace MDD4All.EnterpriseArchitect.DataModels
             Stereotype = apiElement.Stereotype;
             ElementGUID = apiElement.ElementGUID;
             PackageID = apiElement.ParentID;
+            Created = apiElement.Created;
+            Modified = apiElement.Modified;
+            ClassifierID = apiElement.ClassifierID;
             TreePos = apiElement.TreePos;
+
         }
 
         public string Name { get; set; } = "";
@@ -91,9 +102,13 @@ namespace MDD4All.EnterpriseArchitect.DataModels
 
         public Collection BaseClasses => throw new NotImplementedException();
 
-        public int ClassfierID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int ClassfierID
+        {
+            get { return ClassifierID; }
+            set { ClassifierID = value; }
+        }
 
-        public int ClassifierID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int ClassifierID { get; set; }
 
         public string ClassifierName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -109,7 +124,7 @@ namespace MDD4All.EnterpriseArchitect.DataModels
 
         public Collection ConstraintsEx => throw new NotImplementedException();
 
-        public DateTime Created { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime Created { get; set; }
 
         public Collection CustomProperties => throw new NotImplementedException();
 
@@ -169,11 +184,11 @@ namespace MDD4All.EnterpriseArchitect.DataModels
 
         public string MiscData => throw new NotImplementedException();
 
-        public DateTime Modified { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime Modified { get; set; }
 
         public string Multiplicity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public ObjectType ObjectType => throw new NotImplementedException();
+        public ObjectType ObjectType { get; } = ObjectType.otElement;
 
         public Collection Partitions => throw new NotImplementedException();
 
@@ -185,7 +200,7 @@ namespace MDD4All.EnterpriseArchitect.DataModels
 
         public Properties Properties => throw new NotImplementedException();
 
-        public int PropertyType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int PropertyType { get; set; }
 
         public object PropertyTypeName => throw new NotImplementedException();
 
