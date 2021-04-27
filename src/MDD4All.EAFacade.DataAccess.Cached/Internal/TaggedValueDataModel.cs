@@ -81,7 +81,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             bool result = false;
 
-            return false;
+            return result;
         }
 
         public bool SetAttribute(string PropName, string PropValue)

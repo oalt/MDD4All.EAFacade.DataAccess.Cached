@@ -10,6 +10,8 @@
     <PackageTags>EA DataModels</PackageTags>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">1.0.0.0</Version>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>MDD4All_Github.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,7 +21,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MDD4All.EAFacade.DataModels.Contracts" Version="2.1.0.183" />
+    <PackageReference Include="MDD4All.EAFacade.DataModels.Contracts" Version="2.1.1.257" />
     <PackageReference Include="NLog" Version="4.5.11" />
   </ItemGroup>
 
