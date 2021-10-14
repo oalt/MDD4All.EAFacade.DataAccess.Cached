@@ -8,17 +8,12 @@ using EADM = MDD4All.EAFacade.DataAccess.Cached.Internal;
 
 namespace MDD4All.EAFacade.DataAccess.Cached
 {
-    public class CachedRepository : Repository
+    public class CachedRepository : EADM.AbstractDataCache, Repository
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private EAAPI.Repository _apiRepository;
-
-        private List<EADM.PackageDataModel> _packageCache = new List<EADM.PackageDataModel>();
-        private List<EADM.ElementDataModel> _elementCache = new List<EADM.ElementDataModel>();
-        private List<EADM.ConnectorDataModel> _connectorCache = new List<EADM.ConnectorDataModel>();
-        private List<EADM.DiagramDataModel> _diagramCache = new List<EADM.DiagramDataModel>();
-        
+      
         public CachedRepository()
         {
 
@@ -28,10 +23,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         {
             _apiRepository = repository;
 
-            InitializeCache();
+            //CacheAll();
         }
 
-        private void InitializeCache()
+        public void CacheAll()
         {
             logger.Debug("Caching model...");
 
@@ -60,9 +55,11 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             logger.Debug("Caching finished. Duration: " + duration);
         }
 
-        private void InitializePackageCache()
+        
+
+        public void InitializePackageCache()
         {
-            _packageCache = new List<EADM.PackageDataModel>();
+            _packageCache = new List<Package>();
 
             string xml = _apiRepository.SQLQuery("select * from t_package");
 
@@ -76,15 +73,15 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.PackageDataModel package = new EADM.PackageDataModel(row);
+                EADM.PackageDataModel package = new EADM.PackageDataModel(row, this);
 
                 _packageCache.Add(package);
             }
         }
 
-        private void InitializeElementCache()
+        public void InitializeElementCache()
         {
-            _elementCache = new List<EADM.ElementDataModel>();
+            _elementCache = new List<Element>();
 
             string xml = _apiRepository.SQLQuery("select * from t_object");
 
@@ -126,9 +123,9 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             }
         }
 
-        private void InitializeConnectorCache()
+        public void InitializeConnectorCache()
         {
-            _connectorCache = new List<EADM.ConnectorDataModel>();
+            _connectorCache = new List<Connector>();
 
             string xml = _apiRepository.SQLQuery("select * from t_connector");
 
@@ -149,9 +146,9 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             }
         }
 
-        private void InitializeDiagramCache()
+        public void InitializeDiagramCache()
         {
-            _diagramCache = new List<EADM.DiagramDataModel>();
+            _diagramCache = new List<Diagram>();
 
             string xml = _apiRepository.SQLQuery("select * from t_diagram");
 
@@ -248,7 +245,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public int LibraryVersion => throw new NotImplementedException();
 
-        public Collection Models => throw new NotImplementedException();
+        public Collection Models
+        {
+            get
+            {
+                GenericCollection<Package> result = new GenericCollection<Package>();
+
+                try
+                {
+                    result.AddRange(_packageCache.FindAll(package => package.ParentID == 0));
+                }
+                catch
+                {
+                    
+                }
+
+                return result;
+            }
+        }
 
         public ObjectType ObjectType { get; } = ObjectType.otRepository;
 
@@ -703,7 +717,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             if (_apiRepository.OpenFile(filePath))
             {
                 logger.Debug("EA is open.");
-                InitializeCache();
+                CacheAll();
                 result = true;
             }
 
@@ -718,7 +732,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             if (_apiRepository.OpenFile2(filePath, username, password))
             {
-                InitializeCache();
+                CacheAll();
                 result = true;
             }
 

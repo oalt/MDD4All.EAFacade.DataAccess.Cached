@@ -10,13 +10,17 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        private AbstractDataCache _abstractDataCache { get; set; }
+
         public PackageDataModel()
         {
 
         }
 
-        public PackageDataModel(XElement tObjectQueryRow)
+        public PackageDataModel(XElement tObjectQueryRow, AbstractDataCache abstractDataCache)
         {
+            _abstractDataCache = abstractDataCache;
+
             try
             {
                 PackageID = int.Parse(tObjectQueryRow.Element("Package_ID").Value);
@@ -103,7 +107,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public int PackageID { get; private set; }
 
-        public Collection Packages => throw new NotImplementedException();
+        public Collection Packages
+        {
+            get
+            {
+                GenericCollection<Package> result = new GenericCollection<Package>();
+
+                try
+                {
+                    result.AddRange(_abstractDataCache._packageCache.FindAll(package => package.ParentID == PackageID));
+                }
+                catch
+                {
+
+                }
+
+                return result;
+            }
+        }
 
         public int ParentID { get; set; }
         
