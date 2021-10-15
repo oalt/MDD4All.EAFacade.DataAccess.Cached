@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using EAAPI = EA;
-using EAF = MDD4All.EAFacade.DataModels.Contracts;
+using EADM = MDD4All.EAFacade.DataModels.Contracts;
 
 namespace TestCachedDataAccess
 {
@@ -21,7 +21,7 @@ namespace TestCachedDataAccess
 
                 cachedRepository.InitializePackageCache();
 
-                EAF.Collection models = cachedRepository.Models;
+                EADM.Collection models = cachedRepository.Models;
 
                 _originalRepo.Exit();
 

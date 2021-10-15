@@ -55,8 +55,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             logger.Debug("Caching finished. Duration: " + duration);
         }
 
-        
-
         public void InitializePackageCache()
         {
             _packageCache = new List<Package>();
@@ -77,13 +75,59 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                 _packageCache.Add(package);
             }
+
+            InitializePackageElements();
+        }
+
+        private void InitializePackageElements()
+        {
+            _elementCache = new List<Element>();
+
+            string xml = _apiRepository.SQLQuery("select * from t_object where Object_Type = 'Package'");
+
+            XElement rootElement = XElement.Parse(xml);
+
+            XElement datasetElement = rootElement.Element("Dataset_0");
+
+            XElement dataElement = datasetElement.Element("Data");
+
+            IEnumerable<XElement> rows = dataElement.Elements("Row");
+
+            foreach (XElement row in rows)
+            {
+                EADM.ElementDataModel element = new EADM.ElementDataModel(row);
+
+                // tagged values
+                string taggedValueXml = _apiRepository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
+
+                XElement taggedValueRootElement = XElement.Parse(taggedValueXml);
+
+                XElement taggedValueDatasetElement = taggedValueRootElement.Element("Dataset_0");
+
+                if (taggedValueDatasetElement != null)
+                {
+                    XElement taggedValueDataElement = taggedValueDatasetElement.Element("Data");
+
+                    IEnumerable<XElement> taggedValueRows = taggedValueDataElement.Elements("Row");
+
+                    foreach (XElement taggedValueRow in taggedValueRows)
+                    {
+                        TaggedValue taggedValue = new EADM.TaggedValueDataModel(taggedValueRow);
+
+                        element.TaggedValues.Add(taggedValue);
+                    }
+                }
+
+                _elementCache.Add(element);
+
+            }
         }
 
         public void InitializeElementCache()
         {
-            _elementCache = new List<Element>();
+            
 
-            string xml = _apiRepository.SQLQuery("select * from t_object");
+            string xml = _apiRepository.SQLQuery("select * from t_object where Object_Type <> 'Package'");
 
             XElement rootElement = XElement.Parse(xml);
 

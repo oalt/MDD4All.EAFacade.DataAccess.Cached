@@ -45,8 +45,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public PackageDataModel(EAAPI.Package apiPackage)
+        public PackageDataModel(EAAPI.Package apiPackage, AbstractDataCache abstractDataCache)
         {
+            _abstractDataCache = abstractDataCache;
+
             PackageID = apiPackage.PackageID;
             Name = apiPackage.Name;
             ParentID = apiPackage.ParentID;
@@ -71,7 +73,22 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public GenericCollection<Diagram> Diagrams => throw new NotImplementedException();
 
-        public Element Element { get; set; }
+        public Element Element 
+        { 
+            get
+            {
+                Element result = null;
+
+                result = _abstractDataCache._elementCache.Find(element => element.ElementGUID == PackageGUID);
+
+                return result;
+            }
+
+            set
+            {
+                ;
+            }
+        }
 
         public GenericCollection<Element> Elements => throw new NotImplementedException();
 
@@ -79,7 +96,15 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         
         public bool IsControlled { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public bool IsModel => throw new NotImplementedException();
+        public bool IsModel
+        {
+            get
+            {
+                bool result = (ParentID == 0);
+
+                return result;
+            }
+        }
 
         public bool IsNamespace { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         
