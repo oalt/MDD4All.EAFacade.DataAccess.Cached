@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\MDD4All.EnterpriseArchitect.DataModels.Contracts\src\MDD4All.EAFacade.DataModels.Contracts\MDD4All.EAFacade.DataModels.Contracts-dev.csproj" />
+    <ProjectReference Include="..\..\..\MDD4All.EAFacade.DataModels.Contracts\src\MDD4All.EAFacade.DataModels.Contracts\MDD4All.EAFacade.DataModels.Contracts-dev.csproj" />
   </ItemGroup>
 
   <ItemGroup>
