@@ -6,7 +6,7 @@ using EAAPI = EA;
 
 namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
-    internal class PackageDataModel : Package
+    internal class PackageDataModel : RepositoryElementDataModel, Package
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -17,9 +17,12 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         }
 
-        public PackageDataModel(XElement tObjectQueryRow, AbstractDataCache abstractDataCache)
+        public PackageDataModel(XElement tObjectQueryRow, 
+                                AbstractDataCache abstractDataCache,
+                                Repository repository)
         {
             _abstractDataCache = abstractDataCache;
+            Repository = repository;
 
             try
             {
@@ -45,9 +48,12 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public PackageDataModel(EAAPI.Package apiPackage, AbstractDataCache abstractDataCache)
+        public PackageDataModel(EAAPI.Package apiPackage, 
+                                AbstractDataCache abstractDataCache,
+                                Repository repository)
         {
             _abstractDataCache = abstractDataCache;
+            Repository = repository;
 
             PackageID = apiPackage.PackageID;
             Name = apiPackage.Name;

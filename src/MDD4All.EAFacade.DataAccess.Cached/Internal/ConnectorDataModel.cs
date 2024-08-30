@@ -6,7 +6,7 @@ using EAAPI = EA;
 
 namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
-    internal class ConnectorDataModel : Connector
+    internal class ConnectorDataModel : RepositoryElementDataModel, Connector
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -15,8 +15,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         }
 
-        public ConnectorDataModel(XElement tObjectQueryRow)
+        public ConnectorDataModel(XElement tObjectQueryRow, Repository repository)
         {
+            Repository = repository;
+
             try
             {
                 ConnectorID = int.Parse(tObjectQueryRow.Element("Connector_ID").Value);

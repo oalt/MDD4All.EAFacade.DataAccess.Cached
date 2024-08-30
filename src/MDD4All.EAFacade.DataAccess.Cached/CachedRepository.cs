@@ -71,7 +71,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.PackageDataModel package = new EADM.PackageDataModel(row, this);
+                EADM.PackageDataModel package = new EADM.PackageDataModel(row, this, this);
 
                 _packageCache.Add(package);
             }
@@ -95,7 +95,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.ElementDataModel element = new EADM.ElementDataModel(row);
+                EADM.ElementDataModel element = new EADM.ElementDataModel(row, this);
 
                 // tagged values
                 string taggedValueXml = _apiRepository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
@@ -139,7 +139,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.ElementDataModel element = new EADM.ElementDataModel(row);
+                EADM.ElementDataModel element = new EADM.ElementDataModel(row, this);
 
                 // tagged values
                 string taggedValueXml = _apiRepository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
@@ -183,7 +183,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.ConnectorDataModel connector = new EADM.ConnectorDataModel(row);
+                EADM.ConnectorDataModel connector = new EADM.ConnectorDataModel(row, this);
 
                 _connectorCache.Add(connector);
 
@@ -254,8 +254,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached
                 }
             }
         }
-        
 
+        public event EventHandler CachingFinished; 
 
         public Collection Authors => throw new NotImplementedException();
 
@@ -325,6 +325,30 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         public Collection Tasks => throw new NotImplementedException();
 
         public Collection Terms => throw new NotImplementedException();
+
+        public List<Package> AllPackages
+        {
+            get
+            {
+                return _packageCache;
+            }
+        }
+
+        public List<Element> AllElements
+        {
+            get
+            {
+                return _elementCache;
+            }
+        }
+
+        public List<Connector> AllConnectors
+        {
+            get
+            {
+                return _connectorCache;
+            }
+        }
 
         public void ActivateDiagram(int DiagramID)
         {

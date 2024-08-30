@@ -6,7 +6,7 @@ using EAAPI = EA;
 
 namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
-    internal class ElementDataModel : Element
+    internal class ElementDataModel : RepositoryElementDataModel, Element
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -15,8 +15,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         }
 
-        public ElementDataModel(XElement tObjectQueryRow)
+        public ElementDataModel(XElement tObjectQueryRow, Repository repository)
         {
+            Repository = repository;
+
             try
             {
                 ElementID = int.Parse(tObjectQueryRow.Element("Object_ID").Value);

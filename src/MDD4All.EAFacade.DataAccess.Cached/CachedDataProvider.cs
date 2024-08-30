@@ -32,7 +32,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.Element element = new ElementDataModel(row);
+                EADM.Element element = new ElementDataModel(row, null);
 
                 // tagged values
                 string taggedValueXml = _repository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
