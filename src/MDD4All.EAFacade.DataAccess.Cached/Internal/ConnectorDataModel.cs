@@ -63,7 +63,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Element AssociationClass => throw new NotImplementedException();
 
-        public ConnectorEnd ClientEnd => throw new NotImplementedException();
+        public ConnectorEnd ClientEnd { get; set; } = new ConnectorEndDataModel();
 
         public int ClientID { get; set; }
 
@@ -133,11 +133,11 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         
         public string Subtype { get; set; }
 
-        public ConnectorEnd SupplierEnd => throw new NotImplementedException();
+        public ConnectorEnd SupplierEnd { get; set; } = new ConnectorEndDataModel();
 
         public int SupplierID { get; set; }
 
-        public GenericCollection<ConnectorTag> TaggedValues => throw new NotImplementedException();
+        public GenericCollection<ConnectorTag> TaggedValues { get; set; } = new GenericCollection<ConnectorTag>();
 
         public Collection TemplateBindings => throw new NotImplementedException();
 

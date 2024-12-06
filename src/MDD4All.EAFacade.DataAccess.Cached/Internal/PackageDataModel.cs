@@ -63,15 +63,16 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Notes = apiPackage.Notes;
             PackageGUID = apiPackage.PackageGUID;
             TreePos = apiPackage.TreePos;
+            Alias = apiPackage.Alias;
         }
 
-        public string Alias { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Alias { get; set; } = "";
         
-        public int BatchLoad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-       
-        public int BatchSave { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public string CodePath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int BatchLoad { get; set; }
+
+        public int BatchSave { get; set; }
+
+        public string CodePath { get; set; } = "";
 
         public GenericCollection<Connector> Connectors => throw new NotImplementedException();
 
@@ -96,7 +97,17 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public GenericCollection<Element> Elements => throw new NotImplementedException();
+        public GenericCollection<Element> Elements
+        {
+            get
+            {
+                GenericCollection<Element> result = new GenericCollection<Element>();
+
+                result.AddRange(_abstractDataCache._elementCache.FindAll(element => element.PackageID == PackageID));
+
+                return result;
+            }
+        }
 
         public string Flags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         

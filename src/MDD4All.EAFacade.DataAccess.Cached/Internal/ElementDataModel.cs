@@ -42,6 +42,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                     TreePos = treePos;
                 }
 
+                Alias = tObjectQueryRow.Element("Alias").Value;
+
             }
             catch (Exception exception)
             {
@@ -63,6 +65,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Modified = apiElement.Modified;
             ClassifierID = apiElement.ClassifierID;
             TreePos = apiElement.TreePos;
+            Abstract = apiElement.Abstract;
+            Alias = apiElement.Alias;
 
         }
 
@@ -88,19 +92,19 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public GenericCollection<TaggedValue> TaggedValues { get; set; } = new GenericCollection<TaggedValue>();
 
-        public string Abstract { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Abstract { get; set; } = "";
 
         public string ActionFlags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public string Alias { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Alias { get; set; } = "";
 
         public int AssociationClassConnectorID => throw new NotImplementedException();
 
-        public Collection Attributes => throw new NotImplementedException();
+        public Collection Attributes { get; set; } = new GenericCollection<DataModels.Contracts.Attribute>();
 
-        public Collection AttributesEx => throw new NotImplementedException();
+        public Collection AttributesEx { get; set; } = new GenericCollection<DataModels.Contracts.Attribute>();
 
-        public string Author { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Author { get; set; } = "";
 
         public Collection BaseClasses => throw new NotImplementedException();
 
@@ -112,11 +116,11 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public int ClassifierID { get; set; }
 
-        public string ClassifierName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string ClassifierName { get; set; } = "";
 
         public string ClassifierType => throw new NotImplementedException();
 
-        public string Complexity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Complexity { get; set; } = "";
 
         public object CompositeDiagram => throw new NotImplementedException();
 
@@ -178,9 +182,9 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string MetaType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public Collection Methods => throw new NotImplementedException();
+        public Collection Methods { get; set; } = new GenericCollection<Method>();
 
-        public Collection MethodsEx => throw new NotImplementedException();
+        public Collection MethodsEx { get; set; } = new GenericCollection<Method>();
 
         public Collection Metrics => throw new NotImplementedException();
 
