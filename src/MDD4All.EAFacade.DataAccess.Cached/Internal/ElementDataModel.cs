@@ -3,6 +3,7 @@ using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
+using FACADE = MDD4All.EAFacade.DataModels.Contracts;
 
 namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
@@ -33,6 +34,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 Modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
                 ClassifierID = int.Parse(tObjectQueryRow.Element("Classifier").Value);
                 
+
                 PropertyType = 0;
 
                 int treePos = 0;
@@ -43,6 +45,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 }
 
                 Alias = tObjectQueryRow.Element("Alias").Value;
+                RunState = tObjectQueryRow.Element("RunState").Value;
 
             }
             catch (Exception exception)
@@ -67,6 +70,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             TreePos = apiElement.TreePos;
             Abstract = apiElement.Abstract;
             Alias = apiElement.Alias;
+            RunState = apiElement.RunState;
 
         }
 
@@ -100,7 +104,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public int AssociationClassConnectorID => throw new NotImplementedException();
 
-        public Collection Attributes { get; set; } = new GenericCollection<DataModels.Contracts.Attribute>();
+        public Collection Attributes { get; set; } = new GenericCollection<EAFacade.DataModels.Contracts.Attribute>();
 
         public Collection AttributesEx { get; set; } = new GenericCollection<DataModels.Contracts.Attribute>();
 
@@ -220,7 +224,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Collection Risks => throw new NotImplementedException();
 
-        public string RunState { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string RunState { get; set; } = "";
 
         public Collection Scenarios => throw new NotImplementedException();
 

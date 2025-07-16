@@ -162,6 +162,27 @@ namespace MDD4All.EAFacade.DataAccess.Cached
                     }
                 }
 
+                // attributes
+                string attributeValueXml = _apiRepository.SQLQuery("select * from t_attribute where Object_ID = " + element.ElementID);
+
+                XElement attributeValueRootElement = XElement.Parse(attributeValueXml);
+
+                XElement attributeValueDatasetElement = attributeValueRootElement.Element("Dataset_0");
+
+                if (attributeValueDatasetElement != null)
+                {
+                    XElement attributeDataElement = attributeValueDatasetElement.Element("Data");
+
+                    IEnumerable<XElement> attributeRows = attributeDataElement.Elements("Row");
+
+                    foreach (XElement attributeRow in attributeRows)
+                    {
+                        DataModels.Contracts.Attribute attribute = new EADM.AttributeDataModel(attributeRow);
+
+                        ((GenericCollection<DataModels.Contracts.Attribute>)element.Attributes).Add(attribute);
+                    }
+                }
+
                 _elementCache.Add(element);
 
             }
@@ -184,6 +205,27 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             foreach (XElement row in rows)
             {
                 EADM.ConnectorDataModel connector = new EADM.ConnectorDataModel(row, this);
+
+                // tagged values
+                string taggedValueXml = _apiRepository.SQLQuery("select * from t_connectortag where ElementID = " + connector.ConnectorID);
+
+                XElement taggedValueRootElement = XElement.Parse(taggedValueXml);
+
+                XElement taggedValueDatasetElement = taggedValueRootElement.Element("Dataset_0");
+
+                if (taggedValueDatasetElement != null)
+                {
+                    XElement taggedValueDataElement = taggedValueDatasetElement.Element("Data");
+
+                    IEnumerable<XElement> taggedValueRows = taggedValueDataElement.Elements("Row");
+
+                    foreach (XElement taggedValueRow in taggedValueRows)
+                    {
+                        ConnectorTag taggedValue = new EADM.ConnectorTagDataModel(taggedValueRow);
+
+                        connector.TaggedValues.Add(taggedValue);
+                    }
+                }
 
                 _connectorCache.Add(connector);
 

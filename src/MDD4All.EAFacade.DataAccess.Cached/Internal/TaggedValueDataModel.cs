@@ -9,6 +9,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
     internal class TaggedValueDataModel : TaggedValue
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public TaggedValueDataModel()
         {
 

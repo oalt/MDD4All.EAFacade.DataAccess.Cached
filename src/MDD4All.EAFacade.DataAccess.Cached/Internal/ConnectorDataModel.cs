@@ -12,29 +12,29 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public ConnectorDataModel()
         {
-
         }
 
-        public ConnectorDataModel(XElement tObjectQueryRow, Repository repository)
+        public ConnectorDataModel(XElement tConnectorQueryRow, Repository repository)
         {
             Repository = repository;
 
             try
             {
-                ConnectorID = int.Parse(tObjectQueryRow.Element("Connector_ID").Value);
-                Name = tObjectQueryRow.Element("Name").Value;
-                Direction = tObjectQueryRow.Element("Direction").Value;
-                Notes = tObjectQueryRow.Element("Notes").Value;
-                Type = tObjectQueryRow.Element("Connector_Type").Value;
-                Subtype = tObjectQueryRow.Element("SubType").Value;
-                ClientID = int.Parse(tObjectQueryRow.Element("Start_Object_ID").Value);
-                SupplierID = int.Parse(tObjectQueryRow.Element("End_Object_ID").Value);
+                ConnectorID = int.Parse(tConnectorQueryRow.Element("Connector_ID").Value);
+                Name = tConnectorQueryRow.Element("Name").Value;
+                Direction = tConnectorQueryRow.Element("Direction").Value;
+                Notes = tConnectorQueryRow.Element("Notes").Value;
+                Type = tConnectorQueryRow.Element("Connector_Type").Value;
+                Subtype = tConnectorQueryRow.Element("SubType").Value;
+                ClientID = int.Parse(tConnectorQueryRow.Element("Start_Object_ID").Value);
+                SupplierID = int.Parse(tConnectorQueryRow.Element("End_Object_ID").Value);
 
-                Stereotype = tObjectQueryRow.Element("Stereotype").Value;
+                Stereotype = tConnectorQueryRow.Element("Stereotype").Value;
 
-                ConnectorGUID = tObjectQueryRow.Element("ea_guid").Value;
+                ConnectorGUID = tConnectorQueryRow.Element("ea_guid").Value;
 
-                
+                ClientEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Source");
+                SupplierEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Destination");
 
             }
             catch (Exception exception)
@@ -57,6 +57,9 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Stereotype = apiConnector.Stereotype;
 
             ConnectorGUID = apiConnector.ConnectorGUID;
+
+            ClientEnd = new ConnectorEndDataModel(apiConnector.ClientEnd);
+            SupplierEnd = new ConnectorEndDataModel(apiConnector.SupplierEnd);
         }
 
         public string Alias { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

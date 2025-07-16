@@ -33,6 +33,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 Modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
                 Notes = tObjectQueryRow.Element("Notes").Value;
                 PackageGUID = tObjectQueryRow.Element("ea_guid").Value;
+                Flags = tObjectQueryRow.Element("PackageFlags").Value;
 
                 int treePos = 0;
 
@@ -64,6 +65,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             PackageGUID = apiPackage.PackageGUID;
             TreePos = apiPackage.TreePos;
             Alias = apiPackage.Alias;
+            Flags = apiPackage.Flags;
         }
 
         public string Alias { get; set; } = "";
@@ -109,7 +111,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string Flags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Flags { get; set; } = string.Empty;
         
         public bool IsControlled { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -295,6 +297,18 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         public void VersionControlResynchPkgStatus(bool ClearSettings)
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            string result = "[Package]";
+
+            if (Name != null)
+            {
+                result += " " + Name;
+            }
+
+            return result;
         }
     }
 }
