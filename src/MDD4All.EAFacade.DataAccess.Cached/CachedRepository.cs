@@ -34,6 +34,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             if(_apiRepository != null)
             {
+                _connectionString = _apiRepository.ConnectionString;
+
                 InitializePackageCache();
                 logger.Debug(_packageCache.Count + " Packages cached.");
 
@@ -95,7 +97,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.ElementDataModel element = new EADM.ElementDataModel(row, this);
+                EADM.ElementDataModel element = new EADM.ElementDataModel(row, this, this);
 
                 // tagged values
                 string taggedValueXml = _apiRepository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
@@ -139,7 +141,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.ElementDataModel element = new EADM.ElementDataModel(row, this);
+                EADM.ElementDataModel element = new EADM.ElementDataModel(row, this, this);
 
                 // tagged values
                 string taggedValueXml = _apiRepository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
@@ -305,7 +307,9 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Collection Clients => throw new NotImplementedException();
 
-        public string ConnectionString => throw new NotImplementedException();
+        private string _connectionString = string.Empty;
+
+        public string ConnectionString => _connectionString;
 
         public Collection Datatypes => throw new NotImplementedException();
 

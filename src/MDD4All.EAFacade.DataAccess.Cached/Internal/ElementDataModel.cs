@@ -16,9 +16,13 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         }
 
-        public ElementDataModel(XElement tObjectQueryRow, Repository repository)
+        public ElementDataModel(XElement tObjectQueryRow,
+                                AbstractDataCache abstractDataCache,
+                                Repository repository)
         {
             Repository = repository;
+            
+            AbstractDataCache = abstractDataCache;
 
             try
             {
@@ -33,7 +37,12 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 Created = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
                 Modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
                 ClassifierID = int.Parse(tObjectQueryRow.Element("Classifier").Value);
-                
+
+                Pdata1 = tObjectQueryRow.Element("PDATA1").Value;
+                Pdata2 = tObjectQueryRow.Element("PDATA2").Value;
+                Pdata3 = tObjectQueryRow.Element("PDATA3").Value;
+                Pdata4 = tObjectQueryRow.Element("PDATA4").Value;
+                Pdata5 = tObjectQueryRow.Element("PDATA5").Value;
 
                 PropertyType = 0;
 
@@ -92,7 +101,22 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public int TreePos { get; set; }
 
-        public GenericCollection<Element> Elements { get; set; } = new GenericCollection<Element>();
+        public GenericCollection<Element> Elements 
+        { 
+            get
+            {
+                GenericCollection<Element> result = new GenericCollection<Element>();
+
+                result.AddRange(AbstractDataCache._elementCache.FindAll(element => element.ParentID == ElementID && (element.Type != "Port" && element.Type != "ActionPin")));
+
+                return result;
+            }
+            
+            set 
+            { 
+                throw new NotImplementedException();
+            } 
+        } 
 
         public GenericCollection<TaggedValue> TaggedValues { get; set; } = new GenericCollection<TaggedValue>();
 
@@ -138,13 +162,33 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Collection CustomProperties => throw new NotImplementedException();
 
-        public Collection Diagrams => throw new NotImplementedException();
+        public Collection Diagrams
+        {
+            get
+            {
+                GenericCollection<Diagram> result = new GenericCollection<Diagram>();
+
+                result.AddRange(AbstractDataCache._diagramCache.FindAll(diagram => diagram.ParentID == ElementID));
+
+                return result;
+            }
+        }
 
         public string Difficulty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Collection Efforts => throw new NotImplementedException();
 
-        public GenericCollection<Element> EmbeddedElements => throw new NotImplementedException();
+        public GenericCollection<Element> EmbeddedElements
+        {
+            get
+            {
+                GenericCollection<Element> result = new GenericCollection<Element>();
+
+                result.AddRange(AbstractDataCache._elementCache.FindAll(element => element.ParentID == ElementID && (element.Type == "Port" || element.Type == "ActionPin")));
+
+                return result;
+            }
+        }
 
         public string EventFlags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -202,6 +246,16 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Collection Partitions => throw new NotImplementedException();
 
+        private string Pdata1 { get; set; } = string.Empty;
+
+        private string Pdata2 { get; set; } = string.Empty;
+
+        private string Pdata3 { get; set; } = string.Empty;
+
+        private string Pdata4 { get; set; } = string.Empty;
+
+        private string Pdata5 { get; set; } = string.Empty;
+
         public string Persistence { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string Phase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -210,7 +264,28 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Properties Properties => throw new NotImplementedException();
 
-        public int PropertyType { get; set; }
+        public int PropertyType
+        {
+            get
+            {
+                int result = 0;
+
+                if(Type == "Port" || Type == "Part" || Type == "ActionPin")
+                {
+                    Element classifierElement = AbstractDataCache._elementCache.Find(el => el.ElementGUID == Pdata1);
+                    if (classifierElement != null)
+                    {
+                        result = classifierElement.ElementID;
+                    }
+                }
+
+                return result;
+            }
+
+            set
+            {
+            }
+        }
 
         public object PropertyTypeName => throw new NotImplementedException();
 

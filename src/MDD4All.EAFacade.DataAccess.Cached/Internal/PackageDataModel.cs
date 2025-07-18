@@ -1,6 +1,7 @@
 ﻿using MDD4All.EAFacade.DataModels.Contracts;
 using NLog;
 using System;
+using System.Linq;
 using System.Xml.Linq;
 using EAAPI = EA;
 
@@ -80,7 +81,17 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public DateTime Created { get; set; }
 
-        public GenericCollection<Diagram> Diagrams => throw new NotImplementedException();
+        public GenericCollection<Diagram> Diagrams
+        {
+            get
+            {
+                GenericCollection<Diagram> result = new GenericCollection<Diagram>();
+
+                result.AddRange(_abstractDataCache._diagramCache.FindAll(diagram => diagram.PackageID == PackageID && diagram.ParentID == 0));
+
+                return result;
+            }
+        }
 
         public Element Element 
         { 
@@ -105,7 +116,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             {
                 GenericCollection<Element> result = new GenericCollection<Element>();
 
-                result.AddRange(_abstractDataCache._elementCache.FindAll(element => element.PackageID == PackageID));
+                result.AddRange(_abstractDataCache._elementCache.FindAll(element => element.PackageID == PackageID && element.ParentID == 0).OrderBy(element => element.TreePos));
 
                 return result;
             }
@@ -159,7 +170,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
                 try
                 {
-                    result.AddRange(_abstractDataCache._packageCache.FindAll(package => package.ParentID == PackageID));
+                    result.AddRange(_abstractDataCache._packageCache.FindAll(package => package.ParentID == PackageID).OrderBy(p => p.TreePos));
                 }
                 catch
                 {
