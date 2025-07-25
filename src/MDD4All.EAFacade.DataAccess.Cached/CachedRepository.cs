@@ -35,6 +35,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             if(_apiRepository != null)
             {
                 _connectionString = _apiRepository.ConnectionString;
+                _projectGUID = _apiRepository.ProjectGUID;
 
                 InitializePackageCache();
                 logger.Debug(_packageCache.Count + " Packages cached.");
@@ -356,7 +357,9 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public ObjectType ObjectType { get; } = ObjectType.otRepository;
 
-        public string ProjectGUID => throw new NotImplementedException();
+        private string _projectGUID = string.Empty;
+
+        public string ProjectGUID => _projectGUID;
 
         public Collection PropertyTypes => throw new NotImplementedException();
 
