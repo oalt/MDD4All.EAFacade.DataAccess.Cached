@@ -152,7 +152,19 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public object CompositeDiagram => throw new NotImplementedException();
 
-        public Collection Connectors => throw new NotImplementedException();
+        public Collection Connectors
+        {
+            get
+            {
+                GenericCollection<Connector> result = new GenericCollection<Connector>();
+
+                result.AddRange(AbstractDataCache._connectorCache.FindAll(connector => (connector.ClientID == ElementID && connector.SupplierID != ElementID) || 
+                                                                                       (connector.SupplierID == ElementID && connector.ClientID != ElementID) || 
+                                                                                       (connector.ClientID == ElementID && connector.SupplierID == ElementID)));
+
+                return result;
+            }
+        }
 
         public Collection Constraints => throw new NotImplementedException();
 
