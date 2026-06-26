@@ -12,18 +12,13 @@ namespace MDD4All.EAFacade.DataAccess.Cached
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private EAAPI.Repository _apiRepository;
-      
         public CachedRepository()
         {
-
         }
 
         public CachedRepository(EAAPI.Repository repository)
         {
             _apiRepository = repository;
-
-            //CacheAll();
         }
 
         public void CacheAll()
@@ -48,7 +43,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                 InitializeDiagramCache();
                 logger.Debug(_diagramCache.Count + " Diagrams cached.");
-
             }
 
             DateTime endTime = DateTime.Now;
@@ -136,58 +130,61 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             XElement datasetElement = rootElement.Element("Dataset_0");
 
-            XElement dataElement = datasetElement.Element("Data");
-
-            IEnumerable<XElement> rows = dataElement.Elements("Row");
-
-            foreach (XElement row in rows)
+            if (datasetElement != null)
             {
-                EADM.ElementDataModel element = new EADM.ElementDataModel(row, this, this);
+                XElement dataElement = datasetElement.Element("Data");
 
-                // tagged values
-                string taggedValueXml = _apiRepository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
+                IEnumerable<XElement> rows = dataElement.Elements("Row");
 
-                XElement taggedValueRootElement = XElement.Parse(taggedValueXml);
-
-                XElement taggedValueDatasetElement = taggedValueRootElement.Element("Dataset_0");
-
-                if (taggedValueDatasetElement != null)
+                foreach (XElement row in rows)
                 {
-                    XElement taggedValueDataElement = taggedValueDatasetElement.Element("Data");
+                    EADM.ElementDataModel element = new EADM.ElementDataModel(row, this, this);
 
-                    IEnumerable<XElement> taggedValueRows = taggedValueDataElement.Elements("Row");
+                    // tagged values
+                    string taggedValueXml = _apiRepository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
 
-                    foreach (XElement taggedValueRow in taggedValueRows)
+                    XElement taggedValueRootElement = XElement.Parse(taggedValueXml);
+
+                    XElement taggedValueDatasetElement = taggedValueRootElement.Element("Dataset_0");
+
+                    if (taggedValueDatasetElement != null)
                     {
-                        TaggedValue taggedValue = new EADM.TaggedValueDataModel(taggedValueRow);
+                        XElement taggedValueDataElement = taggedValueDatasetElement.Element("Data");
 
-                        element.TaggedValues.Add(taggedValue);
+                        IEnumerable<XElement> taggedValueRows = taggedValueDataElement.Elements("Row");
+
+                        foreach (XElement taggedValueRow in taggedValueRows)
+                        {
+                            TaggedValue taggedValue = new EADM.TaggedValueDataModel(taggedValueRow);
+
+                            element.TaggedValues.Add(taggedValue);
+                        }
                     }
-                }
 
-                // attributes
-                string attributeValueXml = _apiRepository.SQLQuery("select * from t_attribute where Object_ID = " + element.ElementID);
+                    // attributes
+                    string attributeValueXml = _apiRepository.SQLQuery("select * from t_attribute where Object_ID = " + element.ElementID);
 
-                XElement attributeValueRootElement = XElement.Parse(attributeValueXml);
+                    XElement attributeValueRootElement = XElement.Parse(attributeValueXml);
 
-                XElement attributeValueDatasetElement = attributeValueRootElement.Element("Dataset_0");
+                    XElement attributeValueDatasetElement = attributeValueRootElement.Element("Dataset_0");
 
-                if (attributeValueDatasetElement != null)
-                {
-                    XElement attributeDataElement = attributeValueDatasetElement.Element("Data");
-
-                    IEnumerable<XElement> attributeRows = attributeDataElement.Elements("Row");
-
-                    foreach (XElement attributeRow in attributeRows)
+                    if (attributeValueDatasetElement != null)
                     {
-                        DataModels.Contracts.Attribute attribute = new EADM.AttributeDataModel(attributeRow);
+                        XElement attributeDataElement = attributeValueDatasetElement.Element("Data");
 
-                        ((GenericCollection<DataModels.Contracts.Attribute>)element.Attributes).Add(attribute);
+                        IEnumerable<XElement> attributeRows = attributeDataElement.Elements("Row");
+
+                        foreach (XElement attributeRow in attributeRows)
+                        {
+                            DataModels.Contracts.Attribute attribute = new EADM.AttributeDataModel(attributeRow);
+
+                            ((GenericCollection<DataModels.Contracts.Attribute>)element.Attributes).Add(attribute);
+                        }
                     }
+
+                    _elementCache.Add(element);
+
                 }
-
-                _elementCache.Add(element);
-
             }
         }
 
@@ -201,37 +198,40 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             XElement datasetElement = rootElement.Element("Dataset_0");
 
-            XElement dataElement = datasetElement.Element("Data");
-
-            IEnumerable<XElement> rows = dataElement.Elements("Row");
-
-            foreach (XElement row in rows)
+            if (datasetElement != null)
             {
-                EADM.ConnectorDataModel connector = new EADM.ConnectorDataModel(row, this);
+                XElement dataElement = datasetElement.Element("Data");
 
-                // tagged values
-                string taggedValueXml = _apiRepository.SQLQuery("select * from t_connectortag where ElementID = " + connector.ConnectorID);
+                IEnumerable<XElement> rows = dataElement.Elements("Row");
 
-                XElement taggedValueRootElement = XElement.Parse(taggedValueXml);
-
-                XElement taggedValueDatasetElement = taggedValueRootElement.Element("Dataset_0");
-
-                if (taggedValueDatasetElement != null)
+                foreach (XElement row in rows)
                 {
-                    XElement taggedValueDataElement = taggedValueDatasetElement.Element("Data");
+                    EADM.ConnectorDataModel connector = new EADM.ConnectorDataModel(row, this);
 
-                    IEnumerable<XElement> taggedValueRows = taggedValueDataElement.Elements("Row");
+                    // tagged values
+                    string taggedValueXml = _apiRepository.SQLQuery("select * from t_connectortag where ElementID = " + connector.ConnectorID);
 
-                    foreach (XElement taggedValueRow in taggedValueRows)
+                    XElement taggedValueRootElement = XElement.Parse(taggedValueXml);
+
+                    XElement taggedValueDatasetElement = taggedValueRootElement.Element("Dataset_0");
+
+                    if (taggedValueDatasetElement != null)
                     {
-                        ConnectorTag taggedValue = new EADM.ConnectorTagDataModel(taggedValueRow);
+                        XElement taggedValueDataElement = taggedValueDatasetElement.Element("Data");
 
-                        connector.TaggedValues.Add(taggedValue);
+                        IEnumerable<XElement> taggedValueRows = taggedValueDataElement.Elements("Row");
+
+                        foreach (XElement taggedValueRow in taggedValueRows)
+                        {
+                            ConnectorTag taggedValue = new EADM.ConnectorTagDataModel(taggedValueRow);
+
+                            connector.TaggedValues.Add(taggedValue);
+                        }
                     }
+
+                    _connectorCache.Add(connector);
+
                 }
-
-                _connectorCache.Add(connector);
-
             }
         }
 
@@ -245,58 +245,77 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             XElement datasetElement = rootElement.Element("Dataset_0");
 
-            XElement dataElement = datasetElement.Element("Data");
-
-            IEnumerable<XElement> rows = dataElement.Elements("Row");
-
-            foreach (XElement row in rows)
+            if (datasetElement != null)
             {
-                EADM.DiagramDataModel diagram = new EADM.DiagramDataModel(row);
 
+                XElement dataElement = datasetElement.Element("Data");
 
-                _diagramCache.Add(diagram);
+                IEnumerable<XElement> rows = dataElement.Elements("Row");
 
-                // diagram objects
-                string diagramObjectsXml = _apiRepository.SQLQuery("select * from t_diagramobjects where Diagram_ID = " + diagram.DiagramID);
-
-                XElement diagramObjectRootElement = XElement.Parse(diagramObjectsXml);
-
-                XElement diagramObjectDatasetElement = diagramObjectRootElement.Element("Dataset_0");
-
-                if (diagramObjectDatasetElement != null)
+                foreach (XElement row in rows)
                 {
-                    XElement diagramObjectDataElement = diagramObjectDatasetElement.Element("Data");
+                    EADM.DiagramDataModel diagram = new EADM.DiagramDataModel(row);
 
-                    IEnumerable<XElement> diagramObjectRows = diagramObjectDataElement.Elements("Row");
 
-                    foreach (XElement diagramObjectRow in diagramObjectRows)
+                    _diagramCache.Add(diagram);
+
+                    // diagram objects
+                    string diagramObjectsXml = _apiRepository.SQLQuery("select * from t_diagramobjects where Diagram_ID = " + diagram.DiagramID);
+
+                    XElement diagramObjectRootElement = XElement.Parse(diagramObjectsXml);
+
+                    XElement diagramObjectDatasetElement = diagramObjectRootElement.Element("Dataset_0");
+
+                    if (diagramObjectDatasetElement != null)
                     {
-                        EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow);
+                        XElement diagramObjectDataElement = diagramObjectDatasetElement.Element("Data");
 
-                        diagram.DiagramObjects.Add(diagramObject);
+                        IEnumerable<XElement> diagramObjectRows = diagramObjectDataElement.Elements("Row");
+
+                        foreach (XElement diagramObjectRow in diagramObjectRows)
+                        {
+                            EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow);
+
+                            diagram.DiagramObjects.Add(diagramObject);
+                        }
+                    }
+
+                    // diagram links
+                    string diagramLinksXml = _apiRepository.SQLQuery("select * from t_diagramlinks where DiagramID = " + diagram.DiagramID);
+
+                    XElement diagramLinkRootElement = XElement.Parse(diagramLinksXml);
+
+                    XElement diagramLinkDatasetElement = diagramLinkRootElement.Element("Dataset_0");
+
+                    if (diagramLinkDatasetElement != null)
+                    {
+                        XElement diagramLinkDataElement = diagramLinkDatasetElement.Element("Data");
+
+                        IEnumerable<XElement> diagramLinkRows = diagramLinkDataElement.Elements("Row");
+
+                        foreach (XElement diagramLinkRow in diagramLinkRows)
+                        {
+                            EADM.DiagramLinkDataModel diagramLink = new EADM.DiagramLinkDataModel(diagramLinkRow);
+
+                            diagram.DiagramLinks.Add(diagramLink);
+                        }
                     }
                 }
+            }
+        }
 
-                // diagram links
-                string diagramLinksXml = _apiRepository.SQLQuery("select * from t_diagramlinks where DiagramID = " + diagram.DiagramID);
+        private EAAPI.Repository _apiRepository;
 
-                XElement diagramLinkRootElement = XElement.Parse(diagramLinksXml);
+        public EAAPI.Repository ApiRepository
+        {
+            get 
+            { 
+                return _apiRepository; 
+            }
 
-                XElement diagramLinkDatasetElement = diagramLinkRootElement.Element("Dataset_0");
-
-                if (diagramLinkDatasetElement != null)
-                {
-                    XElement diagramLinkDataElement = diagramLinkDatasetElement.Element("Data");
-
-                    IEnumerable<XElement> diagramLinkRows = diagramLinkDataElement.Elements("Row");
-
-                    foreach (XElement diagramLinkRow in diagramLinkRows)
-                    {
-                        EADM.DiagramLinkDataModel diagramLink = new EADM.DiagramLinkDataModel(diagramLinkRow);
-
-                        diagram.DiagramLinks.Add(diagramLink);
-                    }
-                }
+            set
+            {
+                _apiRepository = value; 
             }
         }
 
