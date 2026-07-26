@@ -1,4 +1,4 @@
-﻿using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataModels.Contracts;
 using NLog;
 using System;
 using System.Xml.Linq;
@@ -13,15 +13,19 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public ElementDataModel()
         {
-
+            TaggedValues = new TaggedValueCollection(this);
+            Attributes = new AttributeCollection(this);
         }
 
         public ElementDataModel(XElement tObjectQueryRow,
                                 AbstractDataCache abstractDataCache,
                                 Repository repository)
         {
+            TaggedValues = new TaggedValueCollection(this);
+            Attributes = new AttributeCollection(this);
+
             Repository = repository;
-            
+
             AbstractDataCache = abstractDataCache;
 
             try
@@ -65,6 +69,11 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public ElementDataModel(EAAPI.Element apiElement)
         {
+            TaggedValues = new TaggedValueCollection(this);
+            Attributes = new AttributeCollection(this);
+
+            _apiElement = apiElement;
+
             ElementID = apiElement.ElementID;
             Type = apiElement.Type;
             Name = apiElement.Name;
@@ -83,26 +92,172 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         }
 
-        public string Name { get; set; } = "";
+        private EAAPI.Element? _apiElement;
 
-        public string Notes { get; set; } = "";
+        private EAAPI.Element? ApiElement
+        {
+            get
+            {
+                if (_apiElement == null)
+                {
+                    EAAPI.Repository? apiRepository = Repository?.ApiRepository;
 
-        public string Type { get; set; } = "";
+                    if (apiRepository != null)
+                    {
+                        _apiElement = apiRepository.GetElementByID(ElementID);
+                    }
+                }
 
-        public string Stereotype { get; set; } = "";
+                return _apiElement;
+            }
+        }
+
+        private string _name = "";
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+
+            set
+            {
+                _name = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Name = value;
+                }
+            }
+        }
+
+        private string _notes = "";
+
+        public string Notes
+        {
+            get
+            {
+                return _notes;
+            }
+
+            set
+            {
+                _notes = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Notes = value;
+                }
+            }
+        }
+
+        private string _type = "";
+
+        public string Type
+        {
+            get
+            {
+                return _type;
+            }
+
+            set
+            {
+                _type = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Type = value;
+                }
+            }
+        }
+
+        private string _stereotype = "";
+
+        public string Stereotype
+        {
+            get
+            {
+                return _stereotype;
+            }
+
+            set
+            {
+                _stereotype = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Stereotype = value;
+                }
+            }
+        }
 
         public int ElementID { get; set; }
 
         public string ElementGUID { get; set; } = "";
 
-        public int PackageID { get; set; }
+        private int _packageID;
 
-        public int ParentID { get; set; }
+        public int PackageID
+        {
+            get
+            {
+                return _packageID;
+            }
 
-        public int TreePos { get; set; }
+            set
+            {
+                _packageID = value;
 
-        public GenericCollection<Element> Elements 
-        { 
+                if (ApiElement != null)
+                {
+                    ApiElement.PackageID = value;
+                }
+            }
+        }
+
+        private int _parentID;
+
+        public int ParentID
+        {
+            get
+            {
+                return _parentID;
+            }
+
+            set
+            {
+                _parentID = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.ParentID = value;
+                }
+            }
+        }
+
+        private int _treePos;
+
+        public int TreePos
+        {
+            get
+            {
+                return _treePos;
+            }
+
+            set
+            {
+                _treePos = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.TreePos = value;
+                }
+            }
+        }
+
+        public GenericCollection<Element> Elements
+        {
             get
             {
                 GenericCollection<Element> result = new GenericCollection<Element>();
@@ -111,28 +266,100 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
                 return result;
             }
-            
-            set 
-            { 
+
+            set
+            {
                 throw new NotImplementedException();
-            } 
-        } 
+            }
+        }
 
-        public GenericCollection<TaggedValue> TaggedValues { get; set; } = new GenericCollection<TaggedValue>();
+        public GenericCollection<TaggedValue> TaggedValues { get; set; }
 
-        public string Abstract { get; set; } = "";
+        private string _abstract = "";
 
-        public string ActionFlags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Abstract
+        {
+            get
+            {
+                return _abstract;
+            }
 
-        public string Alias { get; set; } = "";
+            set
+            {
+                _abstract = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Abstract = value;
+                }
+            }
+        }
+
+        private string _actionFlags = "";
+
+        public string ActionFlags
+        {
+            get
+            {
+                return _actionFlags;
+            }
+
+            set
+            {
+                _actionFlags = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.ActionFlags = value;
+                }
+            }
+        }
+
+        private string _alias = "";
+
+        public string Alias
+        {
+            get
+            {
+                return _alias;
+            }
+
+            set
+            {
+                _alias = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Alias = value;
+                }
+            }
+        }
 
         public int AssociationClassConnectorID => throw new NotImplementedException();
 
-        public Collection Attributes { get; set; } = new GenericCollection<EAFacade.DataModels.Contracts.Attribute>();
+        public Collection Attributes { get; set; }
 
         public Collection AttributesEx { get; set; } = new GenericCollection<DataModels.Contracts.Attribute>();
 
-        public string Author { get; set; } = "";
+        private string _author = "";
+
+        public string Author
+        {
+            get
+            {
+                return _author;
+            }
+
+            set
+            {
+                _author = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Author = value;
+                }
+            }
+        }
 
         public Collection BaseClasses => throw new NotImplementedException();
 
@@ -142,13 +369,67 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             set { ClassifierID = value; }
         }
 
-        public int ClassifierID { get; set; }
+        private int _classifierID;
 
-        public string ClassifierName { get; set; } = "";
+        public int ClassifierID
+        {
+            get
+            {
+                return _classifierID;
+            }
+
+            set
+            {
+                _classifierID = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.ClassifierID = value;
+                }
+            }
+        }
+
+        private string _classifierName = "";
+
+        public string ClassifierName
+        {
+            get
+            {
+                return _classifierName;
+            }
+
+            set
+            {
+                _classifierName = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.ClassifierName = value;
+                }
+            }
+        }
 
         public string ClassifierType => throw new NotImplementedException();
 
-        public string Complexity { get; set; } = "";
+        private string _complexity = "";
+
+        public string Complexity
+        {
+            get
+            {
+                return _complexity;
+            }
+
+            set
+            {
+                _complexity = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Complexity = value;
+                }
+            }
+        }
 
         public object CompositeDiagram => throw new NotImplementedException();
 
@@ -158,8 +439,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             {
                 GenericCollection<Connector> result = new GenericCollection<Connector>();
 
-                result.AddRange(AbstractDataCache._connectorCache.FindAll(connector => (connector.ClientID == ElementID && connector.SupplierID != ElementID) || 
-                                                                                       (connector.SupplierID == ElementID && connector.ClientID != ElementID) || 
+                result.AddRange(AbstractDataCache._connectorCache.FindAll(connector => (connector.ClientID == ElementID && connector.SupplierID != ElementID) ||
+                                                                                       (connector.SupplierID == ElementID && connector.ClientID != ElementID) ||
                                                                                        (connector.ClientID == ElementID && connector.SupplierID == ElementID)));
 
                 return result;
@@ -170,7 +451,25 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Collection ConstraintsEx => throw new NotImplementedException();
 
-        public DateTime Created { get; set; }
+        private DateTime _created;
+
+        public DateTime Created
+        {
+            get
+            {
+                return _created;
+            }
+
+            set
+            {
+                _created = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Created = value;
+                }
+            }
+        }
 
         public Collection CustomProperties => throw new NotImplementedException();
 
@@ -186,7 +485,25 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string Difficulty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _difficulty = "";
+
+        public string Difficulty
+        {
+            get
+            {
+                return _difficulty;
+            }
+
+            set
+            {
+                _difficulty = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Difficulty = value;
+                }
+            }
+        }
 
         public Collection Efforts => throw new NotImplementedException();
 
@@ -202,9 +519,45 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string EventFlags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _eventFlags = "";
 
-        public string ExtensionPoints { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string EventFlags
+        {
+            get
+            {
+                return _eventFlags;
+            }
+
+            set
+            {
+                _eventFlags = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.EventFlags = value;
+                }
+            }
+        }
+
+        private string _extensionPoints = "";
+
+        public string ExtensionPoints
+        {
+            get
+            {
+                return _extensionPoints;
+            }
+
+            set
+            {
+                _extensionPoints = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.ExtensionPoints = value;
+                }
+            }
+        }
 
         public Collection Files => throw new NotImplementedException();
 
@@ -212,35 +565,260 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string FQStereotype => throw new NotImplementedException();
 
-        public string Genfile { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _genfile = "";
 
-        public string Genlinks { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Genfile
+        {
+            get
+            {
+                return _genfile;
+            }
 
-        public string Gentype { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            set
+            {
+                _genfile = value;
 
-        public object Header1 { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+                if (ApiElement != null)
+                {
+                    ApiElement.Genfile = value;
+                }
+            }
+        }
 
-        public object Header2 { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _genlinks = "";
 
-        public bool IsActive { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Genlinks
+        {
+            get
+            {
+                return _genlinks;
+            }
 
-        public bool IsComposite { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            set
+            {
+                _genlinks = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Genlinks = value;
+                }
+            }
+        }
+
+        private string _gentype = "";
+
+        public string Gentype
+        {
+            get
+            {
+                return _gentype;
+            }
+
+            set
+            {
+                _gentype = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Gentype = value;
+                }
+            }
+        }
+
+        private object _header1 = null!;
+
+        public object Header1
+        {
+            get
+            {
+                return _header1;
+            }
+
+            set
+            {
+                _header1 = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Header1 = value;
+                }
+            }
+        }
+
+        private object _header2 = null!;
+
+        public object Header2
+        {
+            get
+            {
+                return _header2;
+            }
+
+            set
+            {
+                _header2 = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Header2 = value;
+                }
+            }
+        }
+
+        private bool _isActive;
+
+        public bool IsActive
+        {
+            get
+            {
+                return _isActive;
+            }
+
+            set
+            {
+                _isActive = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.IsActive = value;
+                }
+            }
+        }
+
+        private bool _isComposite;
+
+        public bool IsComposite
+        {
+            get
+            {
+                return _isComposite;
+            }
+
+            set
+            {
+                _isComposite = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.IsComposite = value;
+                }
+            }
+        }
 
         public bool IsInternalDocArtifact => throw new NotImplementedException();
 
-        public bool IsLeaf { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private bool _isLeaf;
 
-        public bool IsNew { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool IsLeaf
+        {
+            get
+            {
+                return _isLeaf;
+            }
 
-        public bool IsRoot { set => throw new NotImplementedException(); }
+            set
+            {
+                _isLeaf = value;
 
-        public bool IsSpec { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+                if (ApiElement != null)
+                {
+                    ApiElement.IsLeaf = value;
+                }
+            }
+        }
+
+        private bool _isNew;
+
+        public bool IsNew
+        {
+            get
+            {
+                return _isNew;
+            }
+
+            set
+            {
+                _isNew = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.IsNew = value;
+                }
+            }
+        }
+
+        public bool IsRoot
+        {
+            set
+            {
+                if (ApiElement != null)
+                {
+                    ApiElement.IsRoot = value;
+                }
+            }
+        }
+
+        private bool _isSpec;
+
+        public bool IsSpec
+        {
+            get
+            {
+                return _isSpec;
+            }
+
+            set
+            {
+                _isSpec = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.IsSpec = value;
+                }
+            }
+        }
 
         public Collection Issues => throw new NotImplementedException();
 
-        public bool Locked { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private bool _locked;
 
-        public string MetaType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool Locked
+        {
+            get
+            {
+                return _locked;
+            }
+
+            set
+            {
+                _locked = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Locked = value;
+                }
+            }
+        }
+
+        private string _metaType = "";
+
+        public string MetaType
+        {
+            get
+            {
+                return _metaType;
+            }
+
+            set
+            {
+                _metaType = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.MetaType = value;
+                }
+            }
+        }
 
         public Collection Methods { get; set; } = new GenericCollection<Method>();
 
@@ -250,9 +828,45 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string MiscData => throw new NotImplementedException();
 
-        public DateTime Modified { get; set; }
+        private DateTime _modified;
 
-        public string Multiplicity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime Modified
+        {
+            get
+            {
+                return _modified;
+            }
+
+            set
+            {
+                _modified = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Modified = value;
+                }
+            }
+        }
+
+        private string _multiplicity = "";
+
+        public string Multiplicity
+        {
+            get
+            {
+                return _multiplicity;
+            }
+
+            set
+            {
+                _multiplicity = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Multiplicity = value;
+                }
+            }
+        }
 
         public ObjectType ObjectType { get; } = ObjectType.otElement;
 
@@ -268,11 +882,65 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         private string Pdata5 { get; set; } = string.Empty;
 
-        public string Persistence { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _persistence = "";
 
-        public string Phase { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Persistence
+        {
+            get
+            {
+                return _persistence;
+            }
 
-        public string Priority { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            set
+            {
+                _persistence = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Persistence = value;
+                }
+            }
+        }
+
+        private string _phase = "";
+
+        public string Phase
+        {
+            get
+            {
+                return _phase;
+            }
+
+            set
+            {
+                _phase = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Phase = value;
+                }
+            }
+        }
+
+        private string _priority = "";
+
+        public string Priority
+        {
+            get
+            {
+                return _priority;
+            }
+
+            set
+            {
+                _priority = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Priority = value;
+                }
+            }
+        }
 
         public Properties Properties => throw new NotImplementedException();
 
@@ -311,23 +979,149 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Collection Risks => throw new NotImplementedException();
 
-        public string RunState { get; set; } = "";
+        private string _runState = "";
+
+        public string RunState
+        {
+            get
+            {
+                return _runState;
+            }
+
+            set
+            {
+                _runState = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.RunState = value;
+                }
+            }
+        }
 
         public Collection Scenarios => throw new NotImplementedException();
 
         public Collection StateTransitions => throw new NotImplementedException();
 
-        public string Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _status = "";
 
-        public string StereotypeEx { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Status
+        {
+            get
+            {
+                return _status;
+            }
 
-        public string StyleEx { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            set
+            {
+                _status = value;
 
-        public int Subtype { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+                if (ApiElement != null)
+                {
+                    ApiElement.Status = value;
+                }
+            }
+        }
 
-        public string Tablespace { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _stereotypeEx = "";
 
-        public string Tag { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string StereotypeEx
+        {
+            get
+            {
+                return _stereotypeEx;
+            }
+
+            set
+            {
+                _stereotypeEx = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.StereotypeEx = value;
+                }
+            }
+        }
+
+        private string _styleEx = "";
+
+        public string StyleEx
+        {
+            get
+            {
+                return _styleEx;
+            }
+
+            set
+            {
+                _styleEx = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.StyleEx = value;
+                }
+            }
+        }
+
+        private int _subtype;
+
+        public int Subtype
+        {
+            get
+            {
+                return _subtype;
+            }
+
+            set
+            {
+                _subtype = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Subtype = value;
+                }
+            }
+        }
+
+        private string _tablespace = "";
+
+        public string Tablespace
+        {
+            get
+            {
+                return _tablespace;
+            }
+
+            set
+            {
+                _tablespace = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Tablespace = value;
+                }
+            }
+        }
+
+        private string _tag = "";
+
+        public string Tag
+        {
+            get
+            {
+                return _tag;
+            }
+
+            set
+            {
+                _tag = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Tag = value;
+                }
+            }
+        }
 
         public Collection TaggedValuesEx => throw new NotImplementedException();
 
@@ -335,9 +1129,45 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Collection Tests => throw new NotImplementedException();
 
-        public string Version { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _version = "";
 
-        public string Visibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Version
+        {
+            get
+            {
+                return _version;
+            }
+
+            set
+            {
+                _version = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Version = value;
+                }
+            }
+        }
+
+        private string _visibility = "";
+
+        public string Visibility
+        {
+            get
+            {
+                return _visibility;
+            }
+
+            set
+            {
+                _visibility = value;
+
+                if (ApiElement != null)
+                {
+                    ApiElement.Visibility = value;
+                }
+            }
+        }
 
         public bool ApplyGroupLock(string aGroupName)
         {
@@ -479,7 +1309,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public bool Update()
         {
-            throw new NotImplementedException();
+            bool result = true;
+
+            if (ApiElement != null)
+            {
+                result = ApiElement.Update();
+            }
+
+            return result;
         }
     }
 }

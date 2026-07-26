@@ -1,4 +1,4 @@
-﻿using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataModels.Contracts;
 using NLog;
 using System;
 using System.Xml.Linq;
@@ -6,7 +6,7 @@ using EAAPI = EA;
 
 namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
-    internal class TaggedValueDataModel : TaggedValue
+    internal class TaggedValueDataModel : RepositoryElementDataModel, TaggedValue
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -15,8 +15,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         }
 
-        public TaggedValueDataModel(XElement tObjectPropertiesRow)
+        public TaggedValueDataModel(XElement tObjectPropertiesRow, Repository repository)
         {
+            Repository = repository;
+
             try
             {
                 Name = tObjectPropertiesRow.Element("Property").Value;
@@ -34,6 +36,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public TaggedValueDataModel(EAAPI.TaggedValue apiTaggedValue)
         {
+            _apiTaggedValue = apiTaggedValue;
+
             Name = apiTaggedValue.Name;
             Notes = apiTaggedValue.Notes;
             Value = apiTaggedValue.Value;
@@ -42,13 +46,119 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             PropertyGUID = apiTaggedValue.PropertyGUID;
         }
 
-        public string Name { get; set; } = "";
+        private EAAPI.TaggedValue? _apiTaggedValue;
 
-        public string Value { get; set; } = "";
+        private EAAPI.TaggedValue? ApiTaggedValue
+        {
+            get
+            {
+                if (_apiTaggedValue == null && !string.IsNullOrEmpty(PropertyGUID))
+                {
+                    EAAPI.Repository? apiRepository = Repository?.ApiRepository;
 
-        public string Notes { get; set; } = "";
+                    if (apiRepository != null)
+                    {
+                        EAAPI.Element apiElement = apiRepository.GetElementByID(ElementID);
 
-        public int ElementID { get; set; }
+                        if (apiElement != null)
+                        {
+                            for (short index = 0; index < apiElement.TaggedValues.Count; index++)
+                            {
+                                EAAPI.TaggedValue currentTaggedValue = (EAAPI.TaggedValue)apiElement.TaggedValues.GetAt(index);
+
+                                if (currentTaggedValue.PropertyGUID == PropertyGUID)
+                                {
+                                    _apiTaggedValue = currentTaggedValue;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return _apiTaggedValue;
+            }
+        }
+
+        private string _name = "";
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+
+            set
+            {
+                _name = value;
+
+                if (ApiTaggedValue != null)
+                {
+                    ApiTaggedValue.Name = value;
+                }
+            }
+        }
+
+        private string _value = "";
+
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+
+            set
+            {
+                _value = value;
+
+                if (ApiTaggedValue != null)
+                {
+                    ApiTaggedValue.Value = value;
+                }
+            }
+        }
+
+        private string _notes = "";
+
+        public string Notes
+        {
+            get
+            {
+                return _notes;
+            }
+
+            set
+            {
+                _notes = value;
+
+                if (ApiTaggedValue != null)
+                {
+                    ApiTaggedValue.Notes = value;
+                }
+            }
+        }
+
+        private int _elementID;
+
+        public int ElementID
+        {
+            get
+            {
+                return _elementID;
+            }
+
+            set
+            {
+                _elementID = value;
+
+                if (ApiTaggedValue != null)
+                {
+                    ApiTaggedValue.ElementID = value;
+                }
+            }
+        }
 
         public string FQName { get; set; } = "";
 
@@ -62,7 +172,25 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public int ParentID => throw new NotImplementedException();
 
-        public string PropertyGUID { get; set; } = "";
+        private string _propertyGUID = "";
+
+        public string PropertyGUID
+        {
+            get
+            {
+                return _propertyGUID;
+            }
+
+            set
+            {
+                _propertyGUID = value;
+
+                if (ApiTaggedValue != null)
+                {
+                    ApiTaggedValue.PropertyGUID = value;
+                }
+            }
+        }
 
         public int PropertyID { get; set; }
 
@@ -92,7 +220,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public bool Update()
         {
-            throw new NotImplementedException();
+            bool result = true;
+
+            if (ApiTaggedValue != null)
+            {
+                result = ApiTaggedValue.Update();
+            }
+
+            return result;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataModels.Contracts;
 using NLog;
 using System;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         }
 
-        public PackageDataModel(XElement tObjectQueryRow, 
+        public PackageDataModel(XElement tObjectQueryRow,
                                 AbstractDataCache abstractDataCache,
                                 Repository repository)
         {
@@ -50,12 +50,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public PackageDataModel(EAAPI.Package apiPackage, 
+        public PackageDataModel(EAAPI.Package apiPackage,
                                 AbstractDataCache abstractDataCache,
                                 Repository repository)
         {
             _abstractDataCache = abstractDataCache;
             Repository = repository;
+
+            _apiPackage = apiPackage;
 
             PackageID = apiPackage.PackageID;
             Name = apiPackage.Name;
@@ -69,17 +71,127 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Flags = apiPackage.Flags;
         }
 
-        public string Alias { get; set; } = "";
-        
-        public int BatchLoad { get; set; }
+        private EAAPI.Package? _apiPackage;
 
-        public int BatchSave { get; set; }
+        private EAAPI.Package? ApiPackage
+        {
+            get
+            {
+                if (_apiPackage == null)
+                {
+                    EAAPI.Repository? apiRepository = Repository?.ApiRepository;
 
-        public string CodePath { get; set; } = "";
+                    if (apiRepository != null)
+                    {
+                        _apiPackage = apiRepository.GetPackageByID(PackageID);
+                    }
+                }
+
+                return _apiPackage;
+            }
+        }
+
+        private string _alias = "";
+
+        public string Alias
+        {
+            get
+            {
+                return _alias;
+            }
+
+            set
+            {
+                _alias = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Alias = value;
+                }
+            }
+        }
+
+        private int _batchLoad;
+
+        public int BatchLoad
+        {
+            get
+            {
+                return _batchLoad;
+            }
+
+            set
+            {
+                _batchLoad = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.BatchLoad = value;
+                }
+            }
+        }
+
+        private int _batchSave;
+
+        public int BatchSave
+        {
+            get
+            {
+                return _batchSave;
+            }
+
+            set
+            {
+                _batchSave = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.BatchSave = value;
+                }
+            }
+        }
+
+        private string _codePath = "";
+
+        public string CodePath
+        {
+            get
+            {
+                return _codePath;
+            }
+
+            set
+            {
+                _codePath = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.CodePath = value;
+                }
+            }
+        }
 
         public GenericCollection<Connector> Connectors => throw new NotImplementedException();
 
-        public DateTime Created { get; set; }
+        private DateTime _created;
+
+        public DateTime Created
+        {
+            get
+            {
+                return _created;
+            }
+
+            set
+            {
+                _created = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Created = value;
+                }
+            }
+        }
 
         public GenericCollection<Diagram> Diagrams
         {
@@ -93,8 +205,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public Element Element 
-        { 
+        public Element Element
+        {
             get
             {
                 Element result = null;
@@ -122,9 +234,45 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string Flags { get; set; } = string.Empty;
-        
-        public bool IsControlled { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _flags = string.Empty;
+
+        public string Flags
+        {
+            get
+            {
+                return _flags;
+            }
+
+            set
+            {
+                _flags = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Flags = value;
+                }
+            }
+        }
+
+        private bool _isControlled;
+
+        public bool IsControlled
+        {
+            get
+            {
+                return _isControlled;
+            }
+
+            set
+            {
+                _isControlled = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.IsControlled = value;
+                }
+            }
+        }
 
         public bool IsModel
         {
@@ -136,9 +284,45 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public bool IsNamespace { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool IsProtected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private bool _isNamespace;
+
+        public bool IsNamespace
+        {
+            get
+            {
+                return _isNamespace;
+            }
+
+            set
+            {
+                _isNamespace = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.IsNamespace = value;
+                }
+            }
+        }
+
+        private bool _isProtected;
+
+        public bool IsProtected
+        {
+            get
+            {
+                return _isProtected;
+            }
+
+            set
+            {
+                _isProtected = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.IsProtected = value;
+                }
+            }
+        }
 
         public bool IsVersionControlled => throw new NotImplementedException();
 
@@ -146,19 +330,127 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public DateTime LastSaveDate => throw new NotImplementedException();
 
-        public bool LogXML { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public DateTime Modified { get; set; }
-        
-        public string Name { get; set; }
+        private bool _logXML;
 
-        public string Notes { get; set; }
+        public bool LogXML
+        {
+            get
+            {
+                return _logXML;
+            }
+
+            set
+            {
+                _logXML = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.LogXML = value;
+                }
+            }
+        }
+
+        private DateTime _modified;
+
+        public DateTime Modified
+        {
+            get
+            {
+                return _modified;
+            }
+
+            set
+            {
+                _modified = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Modified = value;
+                }
+            }
+        }
+
+        private string _name = "";
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+
+            set
+            {
+                _name = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Name = value;
+                }
+            }
+        }
+
+        private string _notes = "";
+
+        public string Notes
+        {
+            get
+            {
+                return _notes;
+            }
+
+            set
+            {
+                _notes = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Notes = value;
+                }
+            }
+        }
 
         public ObjectType ObjectType { get; } = ObjectType.otPackage;
 
-        public string Owner { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public string PackageGUID { get; set; }
+        private string _owner = "";
+
+        public string Owner
+        {
+            get
+            {
+                return _owner;
+            }
+
+            set
+            {
+                _owner = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Owner = value;
+                }
+            }
+        }
+
+        private string _packageGUID = "";
+
+        public string PackageGUID
+        {
+            get
+            {
+                return _packageGUID;
+            }
+
+            set
+            {
+                _packageGUID = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.PackageGUID = value;
+                }
+            }
+        }
 
         public int PackageID { get; private set; }
 
@@ -181,19 +473,145 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int ParentID { get; set; }
-        
-        public string StereotypeEx { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public int TreePos { get; set; }
-        
-        public string UMLVersion { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool UseDTD { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public string Version { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public string XMLPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private int _parentID;
+
+        public int ParentID
+        {
+            get
+            {
+                return _parentID;
+            }
+
+            set
+            {
+                _parentID = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.ParentID = value;
+                }
+            }
+        }
+
+        private string _stereotypeEx = "";
+
+        public string StereotypeEx
+        {
+            get
+            {
+                return _stereotypeEx;
+            }
+
+            set
+            {
+                _stereotypeEx = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.StereotypeEx = value;
+                }
+            }
+        }
+
+        private int _treePos;
+
+        public int TreePos
+        {
+            get
+            {
+                return _treePos;
+            }
+
+            set
+            {
+                _treePos = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.TreePos = value;
+                }
+            }
+        }
+
+        private string _umlVersion = "";
+
+        public string UMLVersion
+        {
+            get
+            {
+                return _umlVersion;
+            }
+
+            set
+            {
+                _umlVersion = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.UMLVersion = value;
+                }
+            }
+        }
+
+        private bool _useDTD;
+
+        public bool UseDTD
+        {
+            get
+            {
+                return _useDTD;
+            }
+
+            set
+            {
+                _useDTD = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.UseDTD = value;
+                }
+            }
+        }
+
+        private string _version = "";
+
+        public string Version
+        {
+            get
+            {
+                return _version;
+            }
+
+            set
+            {
+                _version = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.Version = value;
+                }
+            }
+        }
+
+        private string _xmlPath = "";
+
+        public string XMLPath
+        {
+            get
+            {
+                return _xmlPath;
+            }
+
+            set
+            {
+                _xmlPath = value;
+
+                if (ApiPackage != null)
+                {
+                    ApiPackage.XMLPath = value;
+                }
+            }
+        }
 
         public bool ApplyGroupLock(string aGroupName)
         {
@@ -262,7 +680,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public bool Update()
         {
-            throw new NotImplementedException();
+            bool result = true;
+
+            if (ApiPackage != null)
+            {
+                result = ApiPackage.Update();
+            }
+
+            return result;
         }
 
         public void VersionControlAdd(string ConfigGuid, string XMLFile, string Comment, bool KeepCheckedOut)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using MDD4All.EAFacade.DataModels.Contracts;
@@ -109,7 +109,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                     foreach (XElement taggedValueRow in taggedValueRows)
                     {
-                        TaggedValue taggedValue = new EADM.TaggedValueDataModel(taggedValueRow);
+                        TaggedValue taggedValue = new EADM.TaggedValueDataModel(taggedValueRow, this);
 
                         element.TaggedValues.Add(taggedValue);
                     }
@@ -122,7 +122,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public void InitializeElementCache()
         {
-            
+
 
             string xml = _apiRepository.SQLQuery("select * from t_object where Object_Type <> 'Package'");
 
@@ -155,7 +155,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                         foreach (XElement taggedValueRow in taggedValueRows)
                         {
-                            TaggedValue taggedValue = new EADM.TaggedValueDataModel(taggedValueRow);
+                            TaggedValue taggedValue = new EADM.TaggedValueDataModel(taggedValueRow, this);
 
                             element.TaggedValues.Add(taggedValue);
                         }
@@ -176,7 +176,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                         foreach (XElement attributeRow in attributeRows)
                         {
-                            DataModels.Contracts.Attribute attribute = new EADM.AttributeDataModel(attributeRow);
+                            DataModels.Contracts.Attribute attribute = new EADM.AttributeDataModel(attributeRow, this);
 
                             ((GenericCollection<DataModels.Contracts.Attribute>)element.Attributes).Add(attribute);
                         }
@@ -223,7 +223,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                         foreach (XElement taggedValueRow in taggedValueRows)
                         {
-                            ConnectorTag taggedValue = new EADM.ConnectorTagDataModel(taggedValueRow);
+                            ConnectorTag taggedValue = new EADM.ConnectorTagDataModel(taggedValueRow, this);
 
                             connector.TaggedValues.Add(taggedValue);
                         }
@@ -254,7 +254,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                 foreach (XElement row in rows)
                 {
-                    EADM.DiagramDataModel diagram = new EADM.DiagramDataModel(row);
+                    EADM.DiagramDataModel diagram = new EADM.DiagramDataModel(row, this);
 
 
                     _diagramCache.Add(diagram);
@@ -274,7 +274,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                         foreach (XElement diagramObjectRow in diagramObjectRows)
                         {
-                            EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow);
+                            EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow, this);
 
                             diagram.DiagramObjects.Add(diagramObject);
                         }
@@ -295,7 +295,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                         foreach (XElement diagramLinkRow in diagramLinkRows)
                         {
-                            EADM.DiagramLinkDataModel diagramLink = new EADM.DiagramLinkDataModel(diagramLinkRow);
+                            EADM.DiagramLinkDataModel diagramLink = new EADM.DiagramLinkDataModel(diagramLinkRow, this);
 
                             diagram.DiagramLinks.Add(diagramLink);
                         }
@@ -304,26 +304,47 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             }
         }
 
-        private EAAPI.Repository _apiRepository;
+        private EAAPI.Repository? _apiRepository;
 
-        public EAAPI.Repository ApiRepository
+        public EAAPI.Repository? ApiRepository
         {
-            get 
-            { 
-                return _apiRepository; 
+            get
+            {
+                return _apiRepository;
             }
 
             set
             {
-                _apiRepository = value; 
+                _apiRepository = value;
             }
         }
 
-        public event EventHandler CachingFinished; 
+        public event EventHandler CachingFinished;
 
         public Collection Authors => throw new NotImplementedException();
 
-        public bool BatchAppend { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool BatchAppend
+        {
+            get
+            {
+                bool result = false;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.BatchAppend;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if (_apiRepository != null)
+                {
+                    _apiRepository.BatchAppend = value;
+                }
+            }
+        }
 
         public Collection Clients => throw new NotImplementedException();
 
@@ -333,27 +354,189 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Collection Datatypes => throw new NotImplementedException();
 
-        public EAEditionTypes EAEdition => throw new NotImplementedException();
+        public EAEditionTypes EAEdition
+        {
+            get
+            {
+                EAEditionTypes result = EAEditionTypes.piLite;
 
-        public EAEditionTypes EAEditionEx => throw new NotImplementedException();
+                if (_apiRepository != null)
+                {
+                    result = (EAEditionTypes)_apiRepository.EAEdition;
+                }
 
-        public bool EnableCache { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public int EnableEventFlags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool EnableUIUpdates { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool FlagUpdate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+                return result;
+            }
+        }
 
-        public string InstanceGUID => throw new NotImplementedException();
+        public EAEditionTypes EAEditionEx
+        {
+            get
+            {
+                EAEditionTypes result = EAEditionTypes.piLite;
 
-        public bool IsSecurityEnabled => throw new NotImplementedException();
+                if (_apiRepository != null)
+                {
+                    result = (EAEditionTypes)_apiRepository.EAEditionEx;
+                }
+
+                return result;
+            }
+        }
+
+        public bool EnableCache
+        {
+            get
+            {
+                bool result = false;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.EnableCache;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if (_apiRepository != null)
+                {
+                    _apiRepository.EnableCache = value;
+                }
+            }
+        }
+
+        public int EnableEventFlags
+        {
+            get
+            {
+                int result = 0;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.EnableEventFlags;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if (_apiRepository != null)
+                {
+                    _apiRepository.EnableEventFlags = value;
+                }
+            }
+        }
+
+        public bool EnableUIUpdates
+        {
+            get
+            {
+                bool result = false;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.EnableUIUpdates;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if (_apiRepository != null)
+                {
+                    _apiRepository.EnableUIUpdates = value;
+                }
+            }
+        }
+
+        public bool FlagUpdate
+        {
+            get
+            {
+                bool result = false;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.FlagUpdate;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if (_apiRepository != null)
+                {
+                    _apiRepository.FlagUpdate = value;
+                }
+            }
+        }
+
+        public string InstanceGUID
+        {
+            get
+            {
+                string result = "";
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.InstanceGUID;
+                }
+
+                return result;
+            }
+        }
+
+        public bool IsSecurityEnabled
+        {
+            get
+            {
+                bool result = false;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.IsSecurityEnabled;
+                }
+
+                return result;
+            }
+        }
 
         public Collection Issues => throw new NotImplementedException();
 
-        public string LastUpdate => throw new NotImplementedException();
+        public string LastUpdate
+        {
+            get
+            {
+                string result = "";
 
-        public int LibraryVersion => throw new NotImplementedException();
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.LastUpdate;
+                }
+
+                return result;
+            }
+        }
+
+        public int LibraryVersion
+        {
+            get
+            {
+                int result = 0;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.LibraryVersion;
+                }
+
+                return result;
+            }
+        }
 
         public Collection Models
         {
@@ -367,7 +550,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
                 }
                 catch
                 {
-                    
+
                 }
 
                 return result;
@@ -386,9 +569,51 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Collection Stereotypes => throw new NotImplementedException();
 
-        public bool SuppressEADialogs { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool SuppressSecurityDialog { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool SuppressEADialogs
+        {
+            get
+            {
+                bool result = false;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.SuppressEADialogs;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if (_apiRepository != null)
+                {
+                    _apiRepository.SuppressEADialogs = value;
+                }
+            }
+        }
+
+        public bool SuppressSecurityDialog
+        {
+            get
+            {
+                bool result = false;
+
+                if (_apiRepository != null)
+                {
+                    result = _apiRepository.SuppressSecurityDialog;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                if (_apiRepository != null)
+                {
+                    _apiRepository.SuppressSecurityDialog = value;
+                }
+            }
+        }
 
         public Collection Tasks => throw new NotImplementedException();
 
@@ -420,72 +645,154 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public void ActivateDiagram(int DiagramID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ActivateDiagram(DiagramID);
+            }
         }
 
         public bool ActivatePerspective(string Perspective, int Options)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ActivatePerspective(Perspective, Options);
+            }
+
+            return result;
         }
 
         public void ActivateTab(string Name)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ActivateTab(Name);
+            }
         }
 
         public bool ActivateTechnology(string ID)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ActivateTechnology(ID);
+            }
+
+            return result;
         }
 
         public bool ActivateToolbox(string Toolbox, int Options)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ActivateToolbox(Toolbox, Options);
+            }
+
+            return result;
         }
 
         public bool AddDefinedSearches(string sXML)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.AddDefinedSearches(sXML);
+            }
+
+            return result;
         }
 
         public bool AddDocumentationPath(object Name, object Path, int Type)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.AddDocumentationPath(Name, Path, Type);
+            }
+
+            return result;
         }
 
         public bool AddPerspective(string Perspective, int Options)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.AddPerspective(Perspective, Options);
+            }
+
+            return result;
         }
 
         public object AddTab(string TabName, string ControlID)
         {
-            throw new NotImplementedException();
+            object result = null;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.AddTab(TabName, ControlID);
+            }
+
+            return result;
         }
 
         public object AddWindow(string TabName, string ControlID)
         {
-            throw new NotImplementedException();
+            object result = null;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.AddWindow(TabName, ControlID);
+            }
+
+            return result;
         }
 
         public void AdviseConnectorChange(int ConnectorID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.AdviseConnectorChange(ConnectorID);
+            }
         }
 
         public void AdviseElementChange(int ElementID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.AdviseElementChange(ElementID);
+            }
         }
 
         public bool ChangeLoginUser(string Name, string Password)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ChangeLoginUser(Name, Password);
+            }
+
+            return result;
         }
 
         public bool ClearAuditLogs(object StateDateTime, object EndDateTime)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ClearAuditLogs(StateDateTime, EndDateTime);
+            }
+
+            return result;
         }
 
         public int ClearObjectFlags(string flagSet, int objectID)
@@ -495,32 +802,54 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public void ClearOutput(string Name)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ClearOutput(Name);
+            }
         }
 
         public void CloseAddins()
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.CloseAddins();
+            }
         }
 
         public void CloseDiagram(int DiagramID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.CloseDiagram(DiagramID);
+            }
         }
 
         public void CloseFile()
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.CloseFile();
+            }
         }
 
         public void CreateOutputTab(string Name)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.CreateOutputTab(Name);
+            }
         }
 
         public string CustomCommand(string ClassName, string MethodName, string Parameters)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.CustomCommand(ClassName, MethodName, Parameters);
+            }
+
+            return result;
         }
 
         public bool DefineOverlay(string flagSet, string image)
@@ -530,37 +859,70 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public bool DeletePerspective(string Perspective, int Options)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.DeletePerspective(Perspective, Options);
+            }
+
+            return result;
         }
 
         public bool DeleteTechnology(string ID)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.DeleteTechnology(ID);
+            }
+
+            return result;
         }
 
         public void EnsureOutputVisible(string Name)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.EnsureOutputVisible(Name);
+            }
         }
 
         public void Execute(string SQL)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.Execute(SQL);
+            }
         }
 
         public void ExecutePackageBuildScript(int ScriptOptions, string PackageGUID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ExecutePackageBuildScript(ScriptOptions, PackageGUID);
+            }
         }
 
         public void Exit()
         {
-            _apiRepository.Exit();
+            if (_apiRepository != null)
+            {
+                _apiRepository.Exit();
+            }
         }
 
         public string ExtractImagesFromNote(object Notes, object absPath, object imagePath, int applyMapOption)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ExtractImagesFromNote(Notes, absPath, imagePath, applyMapOption);
+            }
+
+            return result;
         }
 
         public bool GenerateMDGTechnology(string mtsFilename)
@@ -570,17 +932,56 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public string GetActivePerspective()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetActivePerspective();
+            }
+
+            return result;
         }
 
         public MDD4All.EAFacade.DataModels.Contracts.Attribute GetAttributeByGuid(string GUID)
         {
-            throw new NotImplementedException();
+            MDD4All.EAFacade.DataModels.Contracts.Attribute result = null;
+
+            if (_apiRepository != null)
+            {
+                EAAPI.Attribute apiAttribute = _apiRepository.GetAttributeByGuid(GUID);
+
+                if (apiAttribute != null)
+                {
+                    EADM.AttributeDataModel attribute = new EADM.AttributeDataModel(apiAttribute);
+
+                    attribute.Repository = this;
+
+                    result = attribute;
+                }
+            }
+
+            return result;
         }
 
         public MDD4All.EAFacade.DataModels.Contracts.Attribute GetAttributeByID(int AttributeID)
         {
-            throw new NotImplementedException();
+            MDD4All.EAFacade.DataModels.Contracts.Attribute result = null;
+
+            if (_apiRepository != null)
+            {
+                EAAPI.Attribute apiAttribute = _apiRepository.GetAttributeByID(AttributeID);
+
+                if (apiAttribute != null)
+                {
+                    EADM.AttributeDataModel attribute = new EADM.AttributeDataModel(apiAttribute);
+
+                    attribute.Repository = this;
+
+                    result = attribute;
+                }
+            }
+
+            return result;
         }
 
         public Connector GetConnectorByGuid(string guid)
@@ -603,32 +1004,83 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public ObjectType GetContextItem(ref object Item)
         {
-            throw new NotImplementedException();
+            ObjectType result = ObjectType.otNone;
+
+            if (_apiRepository != null)
+            {
+                result = (ObjectType)_apiRepository.GetContextItem(out Item);
+            }
+
+            return result;
         }
 
         public ObjectType GetContextItemType()
         {
-            throw new NotImplementedException();
+            ObjectType result = ObjectType.otNone;
+
+            if (_apiRepository != null)
+            {
+                result = (ObjectType)_apiRepository.GetContextItemType();
+            }
+
+            return result;
         }
 
         public object GetContextObject()
         {
-            throw new NotImplementedException();
+            object result = null;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetContextObject();
+            }
+
+            return result;
         }
 
         public string GetCounts()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetCounts();
+            }
+
+            return result;
         }
 
         public Diagram GetCurrentDiagram()
         {
-            throw new NotImplementedException();
+            Diagram result = null;
+
+            if (_apiRepository != null)
+            {
+                EAAPI.Diagram apiDiagram = _apiRepository.GetCurrentDiagram();
+
+                if (apiDiagram != null)
+                {
+                    EADM.DiagramDataModel diagram = new EADM.DiagramDataModel(apiDiagram);
+
+                    diagram.Repository = this;
+
+                    result = diagram;
+                }
+            }
+
+            return result;
         }
 
         public string GetCurrentLoginUser(bool GetGuid)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetCurrentLoginUser(GetGuid);
+            }
+
+            return result;
         }
 
         public object GetDiagramByGuid(string guid)
@@ -681,32 +1133,74 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public string GetFieldFromFormat(string Format, string Text)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetFieldFromFormat(Format, Text);
+            }
+
+            return result;
         }
 
         public string GetFormatFromField(string Format, string Text)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetFormatFromField(Format, Text);
+            }
+
+            return result;
         }
 
         public string GetFormattedName(object GUID, int FlagInclude, object Separator, int FlagFormat)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetFormattedName(GUID, FlagInclude, Separator, FlagFormat);
+            }
+
+            return result;
         }
 
         public string GetGapAnalysisMatrix()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetGapAnalysisMatrix();
+            }
+
+            return result;
         }
 
         public string GetLastError()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetLastError();
+            }
+
+            return result;
         }
 
         public string GetLocalPath(string sType, string sPath)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetLocalPath(sType, sPath);
+            }
+
+            return result;
         }
 
         public Package GetPackageByGuid(string guid)
@@ -730,12 +1224,26 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public string GetRelationshipMatrix()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetRelationshipMatrix();
+            }
+
+            return result;
         }
 
         public string GetTechnologyVersion(string ID)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetTechnologyVersion(ID);
+            }
+
+            return result;
         }
 
         public Collection GetTreeSelectedElements()
@@ -745,52 +1253,119 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public ObjectType GetTreeSelectedItem(ref object Item)
         {
-            throw new NotImplementedException();
+            ObjectType result = ObjectType.otNone;
+
+            if (_apiRepository != null)
+            {
+                result = (ObjectType)_apiRepository.GetTreeSelectedItem(out Item);
+            }
+
+            return result;
         }
 
         public ObjectType GetTreeSelectedItemType()
         {
-            throw new NotImplementedException();
+            ObjectType result = ObjectType.otNone;
+
+            if (_apiRepository != null)
+            {
+                result = (ObjectType)_apiRepository.GetTreeSelectedItemType();
+            }
+
+            return result;
         }
 
         public object GetTreeSelectedObject()
         {
-            throw new NotImplementedException();
+            object result = null;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetTreeSelectedObject();
+            }
+
+            return result;
         }
 
         public Package GetTreeSelectedPackage()
         {
-            throw new NotImplementedException();
+            Package result = null;
+
+            if (_apiRepository != null)
+            {
+                EAAPI.Package apiPackage = _apiRepository.GetTreeSelectedPackage();
+
+                if (apiPackage != null)
+                {
+                    result = new EADM.PackageDataModel(apiPackage, this, this);
+                }
+            }
+
+            return result;
         }
 
         public string GetTreeXML(int RootPackageID)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetTreeXML(RootPackageID);
+            }
+
+            return result;
         }
 
         public string GetTreeXMLByGUID(string GUID)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetTreeXMLByGUID(GUID);
+            }
+
+            return result;
         }
 
         public string GetTreeXMLForElement(int ElementID)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.GetTreeXMLForElement(ElementID);
+            }
+
+            return result;
         }
 
         public string HasPerspective(string Perspective)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.HasPerspective(Perspective);
+            }
+
+            return result;
         }
 
         public void HideAddinWindow()
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.HideAddinWindow();
+            }
         }
 
         public void ImportPackageBuildScripts(string PackageGUID, string BuildScriptXML)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ImportPackageBuildScripts(PackageGUID, BuildScriptXML);
+            }
         }
 
         public bool ImportRASAsset(string pkgGUID, string protocol, string servername, string model, string storage, string rasGUID, string Version, string Password)
@@ -800,47 +1375,102 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public bool ImportTechnology(string Technology)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ImportTechnology(Technology);
+            }
+
+            return result;
         }
 
         public int InvokeConstructPicker(object ConstructType)
         {
-            throw new NotImplementedException();
+            int result = 0;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.InvokeConstructPicker(ConstructType);
+            }
+
+            return result;
         }
 
         public string InvokeFileDialog(object FilterString, int DefaultFilterIndex, int Flags)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.InvokeFileDialog(FilterString, DefaultFilterIndex, Flags);
+            }
+
+            return result;
         }
 
         public int IsTabOpen(string TabName)
         {
-            throw new NotImplementedException();
+            int result = 0;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.IsTabOpen(TabName);
+            }
+
+            return result;
         }
 
         public bool IsTechnologyEnabled(string ID)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.IsTechnologyEnabled(ID);
+            }
+
+            return result;
         }
 
         public bool IsTechnologyLoaded(string ID)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.IsTechnologyLoaded(ID);
+            }
+
+            return result;
         }
 
         public void LoadAddins()
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.LoadAddins();
+            }
         }
 
         public string MarkupText(object Text)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.MarkupText(Text);
+            }
+
+            return result;
         }
 
         public void OpenDiagram(int DiagramID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.OpenDiagram(DiagramID);
+            }
         }
 
         public bool OpenFile(string filePath)
@@ -877,7 +1507,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public bool OpenFileInEditor(object Name)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.OpenFileInEditor(Name);
+            }
+
+            return result;
         }
 
         public Collection ProjectRoles()
@@ -887,62 +1524,110 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public void RefreshModelView(int PackageID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.RefreshModelView(PackageID);
+            }
         }
 
         public void RefreshOpenDiagrams(bool FullReload)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.RefreshOpenDiagrams(FullReload);
+            }
         }
 
         public void ReloadDiagram(int DiagramID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ReloadDiagram(DiagramID);
+            }
         }
 
         public void ReloadPackage(int PackageID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ReloadPackage(PackageID);
+            }
         }
 
         public void RemoveOutputTab(string Name)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.RemoveOutputTab(Name);
+            }
         }
 
         public void RemoveTab(string Name)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.RemoveTab(Name);
+            }
         }
 
         public bool RemoveWindow(object TabName)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.RemoveWindow(TabName);
+            }
+
+            return result;
         }
 
         public string RepositoryType()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.RepositoryType();
+            }
+
+            return result;
         }
 
         public void RunModelSearch(string QueryName, string SearchTerm, string SearchOptions, string SearchData)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.RunModelSearch(QueryName, SearchTerm, SearchOptions, SearchData);
+            }
         }
 
         public void SaveAllDiagrams()
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.SaveAllDiagrams();
+            }
         }
 
         public bool SaveAuditLogs(string FilePath, object StateDateTime, object EndDateTime)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.SaveAuditLogs(FilePath, StateDateTime, EndDateTime);
+            }
+
+            return result;
         }
 
         public void SaveDiagram(int DiagramID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.SaveDiagram(DiagramID);
+            }
         }
 
         public bool SaveDiagramAsUMLProfile(string dgmGUID, string FileName)
@@ -952,7 +1637,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public bool SaveImageToPath(object imagename, object Path)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.SaveImageToPath(imagename, Path);
+            }
+
+            return result;
         }
 
         public bool SavePackageAsUMLProfile(string pkgGUID, string FileName)
@@ -962,12 +1654,22 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public bool ScanXMIAndReconcile()
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ScanXMIAndReconcile();
+            }
+
+            return result;
         }
 
         public void SetMarkupTerms(object Terms)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.SetMarkupTerms(Terms);
+            }
         }
 
         public int SetObjectFlags(string flagSet, int objectID, int Flags)
@@ -977,67 +1679,122 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public void SetReplacementTerms(object Terms)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.SetReplacementTerms(Terms);
+            }
         }
 
         public void SetUIPerspective(string Perspective)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.SetUIPerspective(Perspective);
+            }
         }
 
         public bool ShowAddinWindow(object TabName)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.ShowAddinWindow(TabName);
+            }
+
+            return result;
         }
 
         public void ShowBrowser(string TabName, string URL)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ShowBrowser(TabName, URL);
+            }
         }
 
         public void ShowDynamicHelp(string Topic)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ShowDynamicHelp(Topic);
+            }
         }
 
         public void ShowInProjectView(object Object)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ShowInProjectView(Object);
+            }
         }
 
         public void ShowProfileToolbox(string Technology, string Profile, bool Show)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ShowProfileToolbox(Technology, Profile, Show);
+            }
         }
 
         public void ShowWindow(int Show)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.ShowWindow(Show);
+            }
         }
 
         public string SQLQuery(string SQL)
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.SQLQuery(SQL);
+            }
+
+            return result;
         }
 
         public bool SynchProfile(object Profile, object Stereotype)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.SynchProfile(Profile, Stereotype);
+            }
+
+            return result;
         }
 
         public void VersionControlResynchPkgStatuses(bool ClearSettings)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.VersionControlResynchPkgStatuses(ClearSettings);
+            }
         }
 
         public void WriteOutput(string Name, string String, int ID)
         {
-            throw new NotImplementedException();
+            if (_apiRepository != null)
+            {
+                _apiRepository.WriteOutput(Name, String, ID);
+            }
         }
 
         public int __TempDebug(int No, DateTime No2, ref int pNo3)
         {
-            throw new NotImplementedException();
+            int result = 0;
+
+            if (_apiRepository != null)
+            {
+                result = _apiRepository.__TempDebug(No, No2, out pNo3);
+            }
+
+            return result;
         }
     }
 }

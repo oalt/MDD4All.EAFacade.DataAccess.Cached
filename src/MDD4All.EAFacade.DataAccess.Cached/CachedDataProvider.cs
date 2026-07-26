@@ -49,7 +49,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                     foreach (XElement taggedValueRow in taggedValueRows)
                     {
-                        EADM.TaggedValue taggedValue = new TaggedValueDataModel(taggedValueRow);
+                        EADM.TaggedValue taggedValue = new TaggedValueDataModel(taggedValueRow, null);
 
                         element.TaggedValues.Add(taggedValue);
                     }

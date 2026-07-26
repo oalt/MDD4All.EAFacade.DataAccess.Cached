@@ -1,4 +1,4 @@
-﻿using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataModels.Contracts;
 using NLog;
 using System;
 using System.Xml.Linq;
@@ -6,17 +6,21 @@ using EAAPI = EA;
 
 namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
-    internal class DiagramDataModel : Diagram
+    internal class DiagramDataModel : RepositoryElementDataModel, Diagram
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public DiagramDataModel()
         {
-
+            DiagramObjects = new DiagramObjectCollection(this);
         }
 
-        public DiagramDataModel(XElement tObjectQueryRow)
+        public DiagramDataModel(XElement tObjectQueryRow, Repository repository)
         {
+            DiagramObjects = new DiagramObjectCollection(this);
+
+            Repository = repository;
+
             try
             {
                 DiagramID = int.Parse(tObjectQueryRow.Element("Diagram_ID").Value);
@@ -35,10 +39,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 }
 
                 Notes = tObjectQueryRow.Element("Notes").Value;
-                
+
                 Stereotype = tObjectQueryRow.Element("Stereotype").Value;
                 DiagramGUID = tObjectQueryRow.Element("ea_guid").Value;
-                
+
                 int cx = 0;
 
                 if (int.TryParse(tObjectQueryRow.Element("cx").Value, out cx))
@@ -67,6 +71,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public DiagramDataModel(EAAPI.Diagram apiDiagram)
         {
+            DiagramObjects = new DiagramObjectCollection(this);
+
+            _apiDiagram = apiDiagram;
+
             DiagramID = apiDiagram.DiagramID;
             Type = apiDiagram.Type;
             Name = apiDiagram.Name;
@@ -85,79 +93,585 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             StyleEx = apiDiagram.StyleEx;
         }
 
-        public string Author { get; set; }
-        
-        public DateTime CreatedDate { get; set; }
-        
-        public int cx { get; set; }
-        
-        public int cy { get; set; }
+        private EAAPI.Diagram? _apiDiagram;
 
-        public string DiagramGUID { get; set; }
+        private EAAPI.Diagram? ApiDiagram
+        {
+            get
+            {
+                if (_apiDiagram == null)
+                {
+                    EAAPI.Repository? apiRepository = Repository?.ApiRepository;
+
+                    if (apiRepository != null)
+                    {
+                        _apiDiagram = apiRepository.GetDiagramByID(DiagramID);
+                    }
+                }
+
+                return _apiDiagram;
+            }
+        }
+
+        private string _author = "";
+
+        public string Author
+        {
+            get
+            {
+                return _author;
+            }
+
+            set
+            {
+                _author = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Author = value;
+                }
+            }
+        }
+
+        private DateTime _createdDate;
+
+        public DateTime CreatedDate
+        {
+            get
+            {
+                return _createdDate;
+            }
+
+            set
+            {
+                _createdDate = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.CreatedDate = value;
+                }
+            }
+        }
+
+        private int _cx;
+
+        public int cx
+        {
+            get
+            {
+                return _cx;
+            }
+
+            set
+            {
+                _cx = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.cx = value;
+                }
+            }
+        }
+
+        private int _cy;
+
+        public int cy
+        {
+            get
+            {
+                return _cy;
+            }
+
+            set
+            {
+                _cy = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.cy = value;
+                }
+            }
+        }
+
+        private string _diagramGUID = "";
+
+        public string DiagramGUID
+        {
+            get
+            {
+                return _diagramGUID;
+            }
+
+            set
+            {
+                _diagramGUID = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.DiagramGUID = value;
+                }
+            }
+        }
 
         public int DiagramID { get; private set; }
 
         public GenericCollection<DiagramLink> DiagramLinks { get; set; } = new GenericCollection<DiagramLink>();
 
-        public GenericCollection<DiagramObject> DiagramObjects { get; set; } = new GenericCollection<DiagramObject>();
+        public GenericCollection<DiagramObject> DiagramObjects { get; set; }
 
-        public string ExtendedStyle { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public string FilterElements { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool HighlightImports { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool IsLocked { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public string MetaType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public DateTime ModifiedDate { get; set; }
-        
-        public string Name { get; set; }
+        private string _extendedStyle = "";
 
-        public string Notes { get; set; }
+        public string ExtendedStyle
+        {
+            get
+            {
+                return _extendedStyle;
+            }
+
+            set
+            {
+                _extendedStyle = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ExtendedStyle = value;
+                }
+            }
+        }
+
+        private string _filterElements = "";
+
+        public string FilterElements
+        {
+            get
+            {
+                return _filterElements;
+            }
+
+            set
+            {
+                _filterElements = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.FilterElements = value;
+                }
+            }
+        }
+
+        private bool _highlightImports;
+
+        public bool HighlightImports
+        {
+            get
+            {
+                return _highlightImports;
+            }
+
+            set
+            {
+                _highlightImports = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.HighlightImports = value;
+                }
+            }
+        }
+
+        private bool _isLocked;
+
+        public bool IsLocked
+        {
+            get
+            {
+                return _isLocked;
+            }
+
+            set
+            {
+                _isLocked = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.IsLocked = value;
+                }
+            }
+        }
+
+        private string _metaType = "";
+
+        public string MetaType
+        {
+            get
+            {
+                return _metaType;
+            }
+
+            set
+            {
+                _metaType = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.MetaType = value;
+                }
+            }
+        }
+
+        private DateTime _modifiedDate;
+
+        public DateTime ModifiedDate
+        {
+            get
+            {
+                return _modifiedDate;
+            }
+
+            set
+            {
+                _modifiedDate = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ModifiedDate = value;
+                }
+            }
+        }
+
+        private string _name = "";
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+
+            set
+            {
+                _name = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Name = value;
+                }
+            }
+        }
+
+        private string _notes = "";
+
+        public string Notes
+        {
+            get
+            {
+                return _notes;
+            }
+
+            set
+            {
+                _notes = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Notes = value;
+                }
+            }
+        }
 
         public ObjectType ObjectType { get; } = ObjectType.otDiagram;
 
-        public string Orientation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _orientation = "";
 
-        public int PackageID { get; set; }
+        public string Orientation
+        {
+            get
+            {
+                return _orientation;
+            }
+
+            set
+            {
+                _orientation = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Orientation = value;
+                }
+            }
+        }
+
+        private int _packageID;
+
+        public int PackageID
+        {
+            get
+            {
+                return _packageID;
+            }
+
+            set
+            {
+                _packageID = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.PackageID = value;
+                }
+            }
+        }
 
         public int PageHeight { get; set; }
 
         public int PageWidth { get; set; }
 
-        public int ParentID { get; set; }
+        private int _parentID;
 
-        public int Scale { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
+        public int ParentID
+        {
+            get
+            {
+                return _parentID;
+            }
+
+            set
+            {
+                _parentID = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ParentID = value;
+                }
+            }
+        }
+
+        private int _scale;
+
+        public int Scale
+        {
+            get
+            {
+                return _scale;
+            }
+
+            set
+            {
+                _scale = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Scale = value;
+                }
+            }
+        }
+
         public Connector SelectedConnector { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Collection SelectedObjects => throw new NotImplementedException();
 
-        public int ShowDetails { get; set; }
-        
-        public bool ShowPackageContents { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool ShowPrivate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool ShowProtected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public bool ShowPublic { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        
-        public string Stereotype { get; set; }
+        private int _showDetails;
 
-        public string StereotypeEx { get; set; }
+        public int ShowDetails
+        {
+            get
+            {
+                return _showDetails;
+            }
 
-        public string StyleEx { get; set; }
+            set
+            {
+                _showDetails = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ShowDetails = value;
+                }
+            }
+        }
+
+        private bool _showPackageContents;
+
+        public bool ShowPackageContents
+        {
+            get
+            {
+                return _showPackageContents;
+            }
+
+            set
+            {
+                _showPackageContents = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ShowPackageContents = value;
+                }
+            }
+        }
+
+        private bool _showPrivate;
+
+        public bool ShowPrivate
+        {
+            get
+            {
+                return _showPrivate;
+            }
+
+            set
+            {
+                _showPrivate = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ShowPrivate = value;
+                }
+            }
+        }
+
+        private bool _showProtected;
+
+        public bool ShowProtected
+        {
+            get
+            {
+                return _showProtected;
+            }
+
+            set
+            {
+                _showProtected = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ShowProtected = value;
+                }
+            }
+        }
+
+        private bool _showPublic;
+
+        public bool ShowPublic
+        {
+            get
+            {
+                return _showPublic;
+            }
+
+            set
+            {
+                _showPublic = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.ShowPublic = value;
+                }
+            }
+        }
+
+        private string _stereotype = "";
+
+        public string Stereotype
+        {
+            get
+            {
+                return _stereotype;
+            }
+
+            set
+            {
+                _stereotype = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Stereotype = value;
+                }
+            }
+        }
+
+        private string _stereotypeEx = "";
+
+        public string StereotypeEx
+        {
+            get
+            {
+                return _stereotypeEx;
+            }
+
+            set
+            {
+                _stereotypeEx = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.StereotypeEx = value;
+                }
+            }
+        }
+
+        private string _styleEx = "";
+
+        public string StyleEx
+        {
+            get
+            {
+                return _styleEx;
+            }
+
+            set
+            {
+                _styleEx = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.StyleEx = value;
+                }
+            }
+        }
 
         public SwimlaneDef SwimlaneDef => throw new NotImplementedException();
 
-        public string Swimlanes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _swimlanes = "";
 
-        public string Type { get; set; }
+        public string Swimlanes
+        {
+            get
+            {
+                return _swimlanes;
+            }
 
-        public string Version { get; set; }
+            set
+            {
+                _swimlanes = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Swimlanes = value;
+                }
+            }
+        }
+
+        public string Type { get; set; } = "";
+
+        private string _version = "";
+
+        public string Version
+        {
+            get
+            {
+                return _version;
+            }
+
+            set
+            {
+                _version = value;
+
+                if (ApiDiagram != null)
+                {
+                    ApiDiagram.Version = value;
+                }
+            }
+        }
 
         public bool ApplyGroupLock(string aGroupName)
         {
@@ -216,7 +730,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public bool Update()
         {
-            throw new NotImplementedException();
+            bool result = true;
+
+            if (ApiDiagram != null)
+            {
+                result = ApiDiagram.Update();
+            }
+
+            return result;
         }
 
         public bool VirtualizeConnector(int connId, int action, int x, int y)
