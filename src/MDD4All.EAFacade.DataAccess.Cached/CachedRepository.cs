@@ -1222,6 +1222,23 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             return result;
         }
 
+        public Project GetProjectInterface()
+        {
+            Project result = null;
+
+            if (_apiRepository != null)
+            {
+                EAAPI.Project apiProject = _apiRepository.GetProjectInterface();
+
+                if (apiProject != null)
+                {
+                    result = new EADM.ProjectDataModel(apiProject);
+                }
+            }
+
+            return result;
+        }
+
         public string GetRelationshipMatrix()
         {
             string result = "";
