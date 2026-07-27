@@ -1,7 +1,5 @@
 ﻿using MDD4All.EAFacade.DataModels.Contracts;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {

@@ -1,4 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
 using NLog;
 using System;
 using System.Xml.Linq;
@@ -298,7 +299,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                GenericCollection<Element> result = new GenericCollection<Element>();
+                ElementChildCollection result = new ElementChildCollection(this, AbstractDataCache);
 
                 result.AddRange(AbstractDataCache._elementCache.FindAll(element => element.ParentID == ElementID && (element.Type != "Port" && element.Type != "ActionPin")));
 
@@ -475,7 +476,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                GenericCollection<Connector> result = new GenericCollection<Connector>();
+                ElementConnectorCollection result = new ElementConnectorCollection(this, AbstractDataCache);
 
                 result.AddRange(AbstractDataCache._connectorCache.FindAll(connector => (connector.ClientID == ElementID && connector.SupplierID != ElementID) ||
                                                                                        (connector.SupplierID == ElementID && connector.ClientID != ElementID) ||
@@ -515,7 +516,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                GenericCollection<Diagram> result = new GenericCollection<Diagram>();
+                ElementDiagramCollection result = new ElementDiagramCollection(this, AbstractDataCache);
 
                 result.AddRange(AbstractDataCache._diagramCache.FindAll(diagram => diagram.ParentID == ElementID));
 

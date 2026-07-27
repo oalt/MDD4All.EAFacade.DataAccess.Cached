@@ -1,4 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
 using NLog;
 using System;
 using System.Xml.Linq;

@@ -1,4 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
 using NLog;
 using System;
 using System.Xml.Linq;
@@ -13,11 +14,13 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         public DiagramDataModel()
         {
             DiagramObjects = new DiagramObjectCollection(this);
+            DiagramLinks = new DiagramLinkCollection(this);
         }
 
         public DiagramDataModel(XElement tObjectQueryRow, Repository repository)
         {
             DiagramObjects = new DiagramObjectCollection(this);
+            DiagramLinks = new DiagramLinkCollection(this);
 
             Repository = repository;
 
@@ -72,6 +75,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         public DiagramDataModel(EAAPI.Diagram apiDiagram)
         {
             DiagramObjects = new DiagramObjectCollection(this);
+            DiagramLinks = new DiagramLinkCollection(this);
 
             _apiDiagram = apiDiagram;
 
@@ -215,7 +219,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public int DiagramID { get; private set; }
 
-        public GenericCollection<DiagramLink> DiagramLinks { get; set; } = new GenericCollection<DiagramLink>();
+        public GenericCollection<DiagramLink> DiagramLinks { get; set; }
 
         public GenericCollection<DiagramObject> DiagramObjects { get; set; }
 

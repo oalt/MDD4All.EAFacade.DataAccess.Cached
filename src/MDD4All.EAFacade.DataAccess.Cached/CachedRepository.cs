@@ -86,9 +86,17 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             XElement datasetElement = rootElement.Element("Dataset_0");
 
-            XElement dataElement = datasetElement.Element("Data");
+            IEnumerable<XElement> rows = new List<XElement>();
 
-            IEnumerable<XElement> rows = dataElement.Elements("Row");
+            if (datasetElement != null)
+            {
+                XElement dataElement = datasetElement.Element("Data");
+
+                if (dataElement != null)
+                {
+                    rows = dataElement.Elements("Row");
+                }
+            }
 
             foreach (XElement row in rows)
             {

@@ -1,4 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
+using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
 using NLog;
 using System;
 using System.Linq;
@@ -197,7 +198,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                GenericCollection<Diagram> result = new GenericCollection<Diagram>();
+                PackageDiagramCollection result = new PackageDiagramCollection(this, _abstractDataCache);
 
                 result.AddRange(_abstractDataCache._diagramCache.FindAll(diagram => diagram.PackageID == PackageID && diagram.ParentID == 0));
 
@@ -226,7 +227,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                GenericCollection<Element> result = new GenericCollection<Element>();
+                PackageElementCollection result = new PackageElementCollection(this, _abstractDataCache);
 
                 result.AddRange(_abstractDataCache._elementCache.FindAll(element => element.PackageID == PackageID && element.ParentID == 0).OrderBy(element => element.TreePos));
 
@@ -458,7 +459,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                GenericCollection<Package> result = new GenericCollection<Package>();
+                PackageChildCollection result = new PackageChildCollection(this, _abstractDataCache);
 
                 try
                 {

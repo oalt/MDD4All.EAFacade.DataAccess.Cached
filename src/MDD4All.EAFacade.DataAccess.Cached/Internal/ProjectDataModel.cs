@@ -1,4 +1,3 @@
-using System;
 using MDD4All.EAFacade.DataModels.Contracts;
 using EAAPI = EA;
 

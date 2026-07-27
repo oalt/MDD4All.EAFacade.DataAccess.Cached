@@ -1,21 +1,20 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using Attribute = MDD4All.EAFacade.DataModels.Contracts.Attribute;
 using EAAPI = EA;
 
-namespace MDD4All.EAFacade.DataAccess.Cached.Internal
+namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
 {
-    internal class AttributeCollection : GenericCollection<Attribute>
+    internal class TaggedValueCollection : GenericCollection<TaggedValue>
     {
         private readonly Element _owner;
 
-        public AttributeCollection(Element owner)
+        public TaggedValueCollection(Element owner)
         {
             _owner = owner;
         }
 
         public override object AddNew(string Name, string Type)
         {
-            AttributeDataModel result;
+            TaggedValueDataModel result;
 
             EAAPI.Repository? apiRepository = _owner.Repository?.ApiRepository;
 
@@ -28,20 +27,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
             if (apiElement != null)
             {
-                EAAPI.Attribute apiAttribute = (EAAPI.Attribute)apiElement.Attributes.AddNew(Name, Type);
+                EAAPI.TaggedValue apiTaggedValue = (EAAPI.TaggedValue)apiElement.TaggedValues.AddNew(Name, Type);
 
-                apiAttribute.Update();
+                apiTaggedValue.Update();
 
-                apiElement.Attributes.Refresh();
+                apiElement.TaggedValues.Refresh();
 
-                result = new AttributeDataModel(apiAttribute);
+                result = new TaggedValueDataModel(apiTaggedValue);
                 result.Repository = _owner.Repository;
             }
             else
             {
-                result = new AttributeDataModel();
+                result = new TaggedValueDataModel();
                 result.Name = Name;
-                result.Type = Type;
+                result.ElementID = _owner.ElementID;
                 result.Repository = _owner.Repository;
             }
 
@@ -52,24 +51,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public override void Delete(short index)
         {
-            Attribute toDelete = this[index];
+            TaggedValue toDelete = this[index];
 
             EAAPI.Repository? apiRepository = _owner.Repository?.ApiRepository;
 
-            if (apiRepository != null && toDelete.AttributeID != 0)
+            if (apiRepository != null && !string.IsNullOrEmpty(toDelete.PropertyGUID))
             {
                 EAAPI.Element apiElement = apiRepository.GetElementByID(_owner.ElementID);
 
                 if (apiElement != null)
                 {
-                    for (short counter = 0; counter < apiElement.Attributes.Count; counter++)
+                    for (short counter = 0; counter < apiElement.TaggedValues.Count; counter++)
                     {
-                        EAAPI.Attribute currentAttribute = (EAAPI.Attribute)apiElement.Attributes.GetAt(counter);
+                        EAAPI.TaggedValue currentTaggedValue = (EAAPI.TaggedValue)apiElement.TaggedValues.GetAt(counter);
 
-                        if (currentAttribute.AttributeID == toDelete.AttributeID)
+                        if (currentTaggedValue.PropertyGUID == toDelete.PropertyGUID)
                         {
-                            apiElement.Attributes.Delete(counter);
-                            apiElement.Attributes.Refresh();
+                            apiElement.TaggedValues.Delete(counter);
+                            apiElement.TaggedValues.Refresh();
                             break;
                         }
                     }

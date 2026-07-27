@@ -1,7 +1,7 @@
 using MDD4All.EAFacade.DataModels.Contracts;
 using EAAPI = EA;
 
-namespace MDD4All.EAFacade.DataAccess.Cached.Internal
+namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
 {
     internal class ConnectorTagCollection : GenericCollection<ConnectorTag>
     {
