@@ -44,6 +44,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result.Name = Name;
                 result.ParentID = _owner.PackageID;
                 result.Repository = _owner.Repository;
+                result._abstractDataCache = _abstractDataCache;
             }
 
             _abstractDataCache._packageCache.Add(result);

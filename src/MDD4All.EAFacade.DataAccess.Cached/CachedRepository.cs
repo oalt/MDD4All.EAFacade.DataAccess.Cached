@@ -1213,9 +1213,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Package GetPackageByGuid(string guid)
         {
-            Package result = null;
-
-            _packageCache.Find(package => package.PackageGUID == guid);
+            Package result = _packageCache.Find(package => package.PackageGUID == guid);
 
             return result;
         }

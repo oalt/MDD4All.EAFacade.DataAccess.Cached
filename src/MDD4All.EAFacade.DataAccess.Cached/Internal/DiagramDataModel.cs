@@ -699,7 +699,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string GetLastError()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (ApiDiagram != null)
+            {
+                result = ApiDiagram.GetLastError();
+            }
+
+            return result;
         }
 
         public string ReadStyle(string Style)

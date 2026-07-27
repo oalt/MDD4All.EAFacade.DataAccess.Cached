@@ -1250,7 +1250,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string GetLastError()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (ApiElement != null)
+            {
+                result = ApiElement.GetLastError();
+            }
+
+            return result;
         }
 
         public string GetLinkedDocument()
@@ -1290,7 +1297,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public void Refresh()
         {
-            throw new NotImplementedException();
+            _apiElement = null;
         }
 
         public bool ReleaseUserLock()
@@ -1305,7 +1312,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public void SetAppearance(int Scope, int Item, int Value)
         {
-            throw new NotImplementedException();
+            if (ApiElement != null)
+            {
+                ApiElement.SetAppearance(Scope, Item, Value);
+            }
         }
 
         public bool SetCompositeDiagram(string sGUID)

@@ -38,6 +38,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
 
                 result = new ElementDataModel(apiChildElement);
                 result.Repository = _owner.Repository;
+                result.AbstractDataCache = _abstractDataCache;
             }
             else
             {
@@ -46,6 +47,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result.Type = Type;
                 result.ParentID = _owner.ElementID;
                 result.Repository = _owner.Repository;
+                result.AbstractDataCache = _abstractDataCache;
             }
 
             _abstractDataCache._elementCache.Add(result);

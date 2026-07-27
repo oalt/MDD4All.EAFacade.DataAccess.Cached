@@ -12,7 +12,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private AbstractDataCache _abstractDataCache { get; set; }
+        internal AbstractDataCache _abstractDataCache { get; set; }
 
         public PackageDataModel()
         {
@@ -656,7 +656,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string GetLastError()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (ApiPackage != null)
+            {
+                result = ApiPackage.GetLastError();
+            }
+
+            return result;
         }
 
         public bool ReleaseUserLock()

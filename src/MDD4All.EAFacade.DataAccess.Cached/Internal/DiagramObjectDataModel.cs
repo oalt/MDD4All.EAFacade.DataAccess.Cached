@@ -988,7 +988,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string GetLastError()
         {
-            throw new NotImplementedException();
+            string result = "";
+
+            if (ApiDiagramObject != null)
+            {
+                result = ApiDiagramObject.GetLastError();
+            }
+
+            return result;
         }
 
         public void ResetFont()
