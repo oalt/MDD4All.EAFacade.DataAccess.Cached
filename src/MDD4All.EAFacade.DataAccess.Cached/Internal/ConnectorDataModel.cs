@@ -36,6 +36,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
                 ConnectorGUID = tConnectorQueryRow.Element("ea_guid").Value;
 
+                StartPointX = int.Parse(tConnectorQueryRow.Element("PtStartX").Value);
+                StartPointY = int.Parse(tConnectorQueryRow.Element("PtStartY").Value);
+                EndPointX = int.Parse(tConnectorQueryRow.Element("PtEndX").Value);
+                EndPointY = int.Parse(tConnectorQueryRow.Element("PtEndY").Value);
+                SequenceNo = int.Parse(tConnectorQueryRow.Element("SeqNo").Value);
+                RouteStyle = int.Parse(tConnectorQueryRow.Element("RouteStyle").Value);
+                Color = int.Parse(tConnectorQueryRow.Element("LineColor").Value);
+                DiagramID = int.Parse(tConnectorQueryRow.Element("DiagramID").Value);
+
+                VirtualInheritance = tConnectorQueryRow.Element("VirtualInheritance").Value;
+                StateFlags = tConnectorQueryRow.Element("StateFlags").Value;
+                StyleEx = tConnectorQueryRow.Element("StyleEx").Value;
+                EventFlags = tConnectorQueryRow.Element("EventFlags").Value;
+
+                IsRoot = tConnectorQueryRow.Element("IsRoot").Value == "1";
+                IsLeaf = tConnectorQueryRow.Element("IsLeaf").Value == "1";
+                IsSpec = tConnectorQueryRow.Element("IsSpec").Value == "1";
+
                 ClientEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Source", repository, ConnectorID);
                 SupplierEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Destination", repository, ConnectorID);
 
@@ -64,6 +82,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Stereotype = apiConnector.Stereotype;
 
             ConnectorGUID = apiConnector.ConnectorGUID;
+
+            StartPointX = apiConnector.StartPointX;
+            StartPointY = apiConnector.StartPointY;
+            EndPointX = apiConnector.EndPointX;
+            EndPointY = apiConnector.EndPointY;
+            SequenceNo = apiConnector.SequenceNo;
+            RouteStyle = apiConnector.RouteStyle;
+            Color = apiConnector.Color;
+            DiagramID = apiConnector.DiagramID;
+
+            VirtualInheritance = apiConnector.VirtualInheritance;
+            StateFlags = apiConnector.StateFlags;
+            StyleEx = apiConnector.StyleEx;
+            EventFlags = apiConnector.EventFlags;
+
+            IsRoot = apiConnector.IsRoot;
+            IsLeaf = apiConnector.IsLeaf;
+            IsSpec = apiConnector.IsSpec;
 
             ClientEnd = new ConnectorEndDataModel(apiConnector.ClientEnd);
             SupplierEnd = new ConnectorEndDataModel(apiConnector.SupplierEnd);

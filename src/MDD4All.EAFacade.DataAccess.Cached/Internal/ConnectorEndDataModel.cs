@@ -31,6 +31,16 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                     Role = tConnectorQueryRow.Element("SourceRole").Value;
                     Aggregation = int.Parse(tConnectorQueryRow.Element("SourceIsAggregate").Value);
                     Cardinality = tConnectorQueryRow.Element("SourceCard").Value;
+                    Visibility = tConnectorQueryRow.Element("SourceAccess").Value;
+                    RoleType = tConnectorQueryRow.Element("SourceRoleType").Value;
+                    RoleNote = tConnectorQueryRow.Element("SourceRoleNote").Value;
+                    Containment = tConnectorQueryRow.Element("SourceContainment").Value;
+                    Ordering = int.Parse(tConnectorQueryRow.Element("SourceIsOrdered").Value);
+                    Qualifier = tConnectorQueryRow.Element("SourceQualifier").Value;
+                    Constraint = tConnectorQueryRow.Element("SourceConstraint").Value;
+                    IsNavigable = tConnectorQueryRow.Element("SourceIsNavigable").Value == "1";
+                    IsChangeable = tConnectorQueryRow.Element("SourceChangeable").Value;
+                    Stereotype = tConnectorQueryRow.Element("SourceStereotype").Value;
 
                     string style = tConnectorQueryRow.Element("SourceStyle").Value;
 
@@ -60,6 +70,16 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                     Role = tConnectorQueryRow.Element("DestRole").Value;
                     Aggregation = int.Parse(tConnectorQueryRow.Element("DestIsAggregate").Value);
                     Cardinality = tConnectorQueryRow.Element("DestCard").Value;
+                    Visibility = tConnectorQueryRow.Element("DestAccess").Value;
+                    RoleType = tConnectorQueryRow.Element("DestRoleType").Value;
+                    RoleNote = tConnectorQueryRow.Element("DestRoleNote").Value;
+                    Containment = tConnectorQueryRow.Element("DestContainment").Value;
+                    Ordering = int.Parse(tConnectorQueryRow.Element("DestIsOrdered").Value);
+                    Qualifier = tConnectorQueryRow.Element("DestQualifier").Value;
+                    Constraint = tConnectorQueryRow.Element("DestConstraint").Value;
+                    IsNavigable = tConnectorQueryRow.Element("DestIsNavigable").Value == "1";
+                    IsChangeable = tConnectorQueryRow.Element("DestChangeable").Value;
+                    Stereotype = tConnectorQueryRow.Element("DestStereotype").Value;
 
                     string style = tConnectorQueryRow.Element("DestStyle").Value;
 
@@ -100,6 +120,17 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Cardinality = connectorEnd.Cardinality;
             Derived = connectorEnd.Derived;
             AllowDuplicates = connectorEnd.AllowDuplicates;
+
+            Visibility = connectorEnd.Visibility;
+            RoleType = connectorEnd.RoleType;
+            RoleNote = connectorEnd.RoleNote;
+            Containment = connectorEnd.Containment;
+            Ordering = connectorEnd.Ordering;
+            Qualifier = connectorEnd.Qualifier;
+            Constraint = connectorEnd.Constraint;
+            IsNavigable = connectorEnd.IsNavigable;
+            IsChangeable = connectorEnd.IsChangeable;
+            Stereotype = connectorEnd.Stereotype;
         }
 
         private EAAPI.ConnectorEnd? _apiConnectorEnd;

@@ -60,6 +60,26 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 Alias = tObjectQueryRow.Element("Alias").Value;
                 RunState = tObjectQueryRow.Element("RunState").Value;
 
+                Version = tObjectQueryRow.Element("Version").Value;
+                Abstract = tObjectQueryRow.Element("Abstract").Value;
+                Complexity = tObjectQueryRow.Element("Complexity").Value;
+                Status = tObjectQueryRow.Element("Status").Value;
+                Visibility = tObjectQueryRow.Element("Visibility").Value;
+                Persistence = tObjectQueryRow.Element("Persistence").Value;
+                Gentype = tObjectQueryRow.Element("GenType").Value;
+                Genfile = tObjectQueryRow.Element("GenFile").Value;
+                Header1 = tObjectQueryRow.Element("Header1").Value;
+                Header2 = tObjectQueryRow.Element("Header2").Value;
+                Phase = tObjectQueryRow.Element("Phase").Value;
+                Genlinks = tObjectQueryRow.Element("GenLinks").Value;
+                Multiplicity = tObjectQueryRow.Element("Multiplicity").Value;
+                ActionFlags = tObjectQueryRow.Element("ActionFlags").Value;
+
+                IsRoot = tObjectQueryRow.Element("IsRoot").Value == "1";
+                IsLeaf = tObjectQueryRow.Element("IsLeaf").Value == "1";
+                IsSpec = tObjectQueryRow.Element("IsSpec").Value == "1";
+                IsActive = tObjectQueryRow.Element("IsActive").Value == "1";
+
             }
             catch (Exception exception)
             {
@@ -81,7 +101,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             PackageID = apiElement.PackageID;
             Stereotype = apiElement.Stereotype;
             ElementGUID = apiElement.ElementGUID;
-            PackageID = apiElement.ParentID;
+            ParentID = apiElement.ParentID;
             Created = apiElement.Created;
             Modified = apiElement.Modified;
             ClassifierID = apiElement.ClassifierID;
@@ -89,6 +109,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Abstract = apiElement.Abstract;
             Alias = apiElement.Alias;
             RunState = apiElement.RunState;
+
+            Version = apiElement.Version;
+            Complexity = apiElement.Complexity;
+            Status = apiElement.Status;
+            Visibility = apiElement.Visibility;
+            Persistence = apiElement.Persistence;
+            Gentype = apiElement.Gentype;
+            Genfile = apiElement.Genfile;
+            Header1 = apiElement.Header1;
+            Header2 = apiElement.Header2;
+            Phase = apiElement.Phase;
+            Genlinks = apiElement.Genlinks;
+            Multiplicity = apiElement.Multiplicity;
+            ActionFlags = apiElement.ActionFlags;
+
+            IsLeaf = apiElement.IsLeaf;
+            IsSpec = apiElement.IsSpec;
+            IsActive = apiElement.IsActive;
 
         }
 
