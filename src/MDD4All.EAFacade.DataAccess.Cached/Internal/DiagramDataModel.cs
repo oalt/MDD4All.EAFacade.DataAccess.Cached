@@ -65,6 +65,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
                 StyleEx = tObjectQueryRow.Element("StyleEx").Value;
 
+                ShowPublic = tObjectQueryRow.Element("AttPub").Value == "1";
+                ShowPrivate = tObjectQueryRow.Element("AttPri").Value == "1";
+                ShowProtected = tObjectQueryRow.Element("AttPro").Value == "1";
+                Orientation = tObjectQueryRow.Element("Orientation").Value;
+                ShowPackageContents = tObjectQueryRow.Element("ShowPackageContents").Value == "1";
+                IsLocked = tObjectQueryRow.Element("Locked").Value == "1";
+
+                int scale = 0;
+
+                if (int.TryParse(tObjectQueryRow.Element("Scale").Value, out scale))
+                {
+                    Scale = scale;
+                }
+
             }
             catch (Exception exception)
             {
@@ -95,6 +109,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             CreatedDate = apiDiagram.CreatedDate;
             ModifiedDate = apiDiagram.ModifiedDate;
             StyleEx = apiDiagram.StyleEx;
+
+            ShowPublic = apiDiagram.ShowPublic;
+            ShowPrivate = apiDiagram.ShowPrivate;
+            ShowProtected = apiDiagram.ShowProtected;
+            Orientation = apiDiagram.Orientation;
+            ShowPackageContents = apiDiagram.ShowPackageContents;
+            IsLocked = apiDiagram.IsLocked;
+            Scale = apiDiagram.Scale;
         }
 
         private EAAPI.Diagram? _apiDiagram;

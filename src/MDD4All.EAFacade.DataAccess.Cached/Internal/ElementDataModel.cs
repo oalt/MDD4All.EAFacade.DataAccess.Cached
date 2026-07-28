@@ -859,7 +859,17 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public Collection Methods { get; set; } = new GenericCollection<Method>();
+        public Collection Methods
+        {
+            get
+            {
+                MethodCollection result = new MethodCollection(this, AbstractDataCache);
+
+                result.AddRange(AbstractDataCache._methodCache.FindAll(method => method.ParentID == ElementID));
+
+                return result;
+            }
+        }
 
         public Collection MethodsEx { get; set; } = new GenericCollection<Method>();
 

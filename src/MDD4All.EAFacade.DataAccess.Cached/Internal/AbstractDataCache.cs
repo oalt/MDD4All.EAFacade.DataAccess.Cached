@@ -9,6 +9,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         protected internal List<Element> _elementCache { get; set; } = new List<Element>();
         protected internal List<Connector> _connectorCache { get; set; } = new List<Connector>();
         protected internal List<Diagram> _diagramCache { get; set; } = new List<Diagram>();
+        protected internal List<Method> _methodCache { get; set; } = new List<Method>();
 
         
         

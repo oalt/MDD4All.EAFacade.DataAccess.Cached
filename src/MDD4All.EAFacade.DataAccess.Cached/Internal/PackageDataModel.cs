@@ -44,6 +44,33 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                     TreePos = treePos;
                 }
 
+                XMLPath = tObjectQueryRow.Element("XMLPath").Value;
+                IsControlled = tObjectQueryRow.Element("IsControlled").Value == "1";
+                Version = tObjectQueryRow.Element("Version").Value;
+                IsProtected = tObjectQueryRow.Element("Protected").Value == "1";
+                Owner = tObjectQueryRow.Element("PkgOwner").Value;
+                UMLVersion = tObjectQueryRow.Element("UMLVersion").Value;
+                UseDTD = tObjectQueryRow.Element("UseDTD").Value == "1";
+                LogXML = tObjectQueryRow.Element("LogXML").Value == "1";
+                CodePath = tObjectQueryRow.Element("CodePath").Value;
+                IsNamespace = tObjectQueryRow.Element("Namespace").Value == "1";
+                BatchSave = int.Parse(tObjectQueryRow.Element("BatchSave").Value);
+                BatchLoad = int.Parse(tObjectQueryRow.Element("BatchLoad").Value);
+
+                DateTime lastLoadDate;
+
+                if (DateTime.TryParse(tObjectQueryRow.Element("LastLoadDate").Value, out lastLoadDate))
+                {
+                    LastLoadDate = lastLoadDate;
+                }
+
+                DateTime lastSaveDate;
+
+                if (DateTime.TryParse(tObjectQueryRow.Element("LastSaveDate").Value, out lastSaveDate))
+                {
+                    LastSaveDate = lastSaveDate;
+                }
+
             }
             catch (Exception exception)
             {
@@ -70,6 +97,21 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             TreePos = apiPackage.TreePos;
             Alias = apiPackage.Alias;
             Flags = apiPackage.Flags;
+
+            XMLPath = apiPackage.XMLPath;
+            IsControlled = apiPackage.IsControlled;
+            Version = apiPackage.Version;
+            IsProtected = apiPackage.IsProtected;
+            Owner = apiPackage.Owner;
+            UMLVersion = apiPackage.UMLVersion;
+            UseDTD = apiPackage.UseDTD;
+            LogXML = apiPackage.LogXML;
+            CodePath = apiPackage.CodePath;
+            IsNamespace = apiPackage.IsNamespace;
+            BatchSave = apiPackage.BatchSave;
+            BatchLoad = apiPackage.BatchLoad;
+            LastLoadDate = apiPackage.LastLoadDate;
+            LastSaveDate = apiPackage.LastSaveDate;
         }
 
         private EAAPI.Package? _apiPackage;
@@ -327,9 +369,35 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public bool IsVersionControlled => throw new NotImplementedException();
 
-        public DateTime LastLoadDate => throw new NotImplementedException();
+        private DateTime _lastLoadDate;
 
-        public DateTime LastSaveDate => throw new NotImplementedException();
+        public DateTime LastLoadDate
+        {
+            get
+            {
+                return _lastLoadDate;
+            }
+
+            set
+            {
+                _lastLoadDate = value;
+            }
+        }
+
+        private DateTime _lastSaveDate;
+
+        public DateTime LastSaveDate
+        {
+            get
+            {
+                return _lastSaveDate;
+            }
+
+            set
+            {
+                _lastSaveDate = value;
+            }
+        }
 
         private bool _logXML;
 
@@ -649,6 +717,16 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             throw new NotImplementedException();
         }
 
+        public object GetClassCodeObjects(object CodeIDs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetCodeObject(object CodeID)
+        {
+            throw new NotImplementedException();
+        }
+
         public void GetCodeProject(ref string GUID, ref string ProjectType)
         {
             throw new NotImplementedException();
@@ -682,6 +760,11 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         }
 
         public void SetReadOnly(bool ReadOnly, bool IncludeSubPkgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ShallowGetClassCodeObjects(string CodeIDs)
         {
             throw new NotImplementedException();
         }

@@ -31,6 +31,23 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 Default = attributeRow.Element("Default").Value;
                 ClassifierID = int.Parse(attributeRow.Element("Classifier").Value);
                 ParentID = int.Parse(attributeRow.Element("Object_ID").Value);
+
+                Stereotype = attributeRow.Element("Stereotype").Value;
+                Containment = attributeRow.Element("Containment").Value;
+                IsStatic = attributeRow.Element("IsStatic").Value == "1";
+                IsCollection = attributeRow.Element("IsCollection").Value == "1";
+                IsOrdered = attributeRow.Element("IsOrdered").Value == "1";
+                AllowDuplicates = attributeRow.Element("AllowDuplicates").Value == "1";
+                LowerBound = attributeRow.Element("LowerBound").Value;
+                UpperBound = attributeRow.Element("UpperBound").Value;
+                Container = attributeRow.Element("Container").Value;
+                IsDerived = attributeRow.Element("Derived").Value == "1";
+                Length = attributeRow.Element("Length").Value;
+                Precision = attributeRow.Element("Precision").Value;
+                Scale = attributeRow.Element("Scale").Value;
+                IsConst = attributeRow.Element("Const").Value == "1";
+                Style = attributeRow.Element("Style").Value;
+                StyleEx = attributeRow.Element("StyleEx").Value;
             }
             catch (Exception exception)
             {
@@ -52,6 +69,23 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             Default = apiAttribute.Default;
             ClassifierID = apiAttribute.ClassifierID;
             ParentID = apiAttribute.ParentID;
+
+            Stereotype = apiAttribute.Stereotype;
+            Containment = apiAttribute.Containment;
+            IsStatic = apiAttribute.IsStatic;
+            IsCollection = apiAttribute.IsCollection;
+            IsOrdered = apiAttribute.IsOrdered;
+            AllowDuplicates = apiAttribute.AllowDuplicates;
+            LowerBound = apiAttribute.LowerBound;
+            UpperBound = apiAttribute.UpperBound;
+            Container = apiAttribute.Container;
+            IsDerived = apiAttribute.IsDerived;
+            Length = apiAttribute.Length;
+            Precision = apiAttribute.Precision;
+            Scale = apiAttribute.Scale;
+            IsConst = apiAttribute.IsConst;
+            Style = apiAttribute.Style;
+            StyleEx = apiAttribute.StyleEx;
         }
 
         private EAAPI.Attribute? _apiAttribute;

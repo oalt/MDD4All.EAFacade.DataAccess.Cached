@@ -41,6 +41,9 @@ namespace MDD4All.EAFacade.DataAccess.Cached
                 InitializeConnectorCache();
                 logger.Debug(_connectorCache.Count + " Connectors cached.");
 
+                InitializeMethodCache();
+                logger.Debug(_methodCache.Count + " Methods cached.");
+
                 InitializeDiagramCache();
                 logger.Debug(_diagramCache.Count + " Diagrams cached.");
             }
@@ -239,6 +242,77 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                     _connectorCache.Add(connector);
 
+                }
+            }
+        }
+
+        public void InitializeMethodCache()
+        {
+            _methodCache = new List<Method>();
+
+            string xml = _apiRepository.SQLQuery("select * from t_operation");
+
+            XElement rootElement = XElement.Parse(xml);
+
+            XElement datasetElement = rootElement.Element("Dataset_0");
+
+            if (datasetElement != null)
+            {
+                XElement dataElement = datasetElement.Element("Data");
+
+                IEnumerable<XElement> rows = dataElement.Elements("Row");
+
+                foreach (XElement row in rows)
+                {
+                    EADM.MethodDataModel method = new EADM.MethodDataModel(row, this);
+
+                    // parameters
+                    string parameterXml = _apiRepository.SQLQuery("select * from t_operationparams where OperationID = " + method.MethodID);
+
+                    XElement parameterRootElement = XElement.Parse(parameterXml);
+
+                    XElement parameterDatasetElement = parameterRootElement.Element("Dataset_0");
+
+                    if (parameterDatasetElement != null)
+                    {
+                        XElement parameterDataElement = parameterDatasetElement.Element("Data");
+
+                        IEnumerable<XElement> parameterRows = parameterDataElement.Elements("Row");
+
+                        foreach (XElement parameterRow in parameterRows)
+                        {
+                            EADM.ParameterDataModel parameter = new EADM.ParameterDataModel(parameterRow, this);
+
+                            parameter.ParentElementID = method.ParentID;
+
+                            ((GenericCollection<Parameter>)method.Parameters).Add(parameter);
+                        }
+                    }
+
+                    // tagged values
+                    string taggedValueXml = _apiRepository.SQLQuery("select * from t_operationtag where ElementID = " + method.MethodID);
+
+                    XElement taggedValueRootElement = XElement.Parse(taggedValueXml);
+
+                    XElement taggedValueDatasetElement = taggedValueRootElement.Element("Dataset_0");
+
+                    if (taggedValueDatasetElement != null)
+                    {
+                        XElement taggedValueDataElement = taggedValueDatasetElement.Element("Data");
+
+                        IEnumerable<XElement> taggedValueRows = taggedValueDataElement.Elements("Row");
+
+                        foreach (XElement taggedValueRow in taggedValueRows)
+                        {
+                            EADM.MethodTagDataModel taggedValue = new EADM.MethodTagDataModel(taggedValueRow, this);
+
+                            taggedValue.ParentElementID = method.ParentID;
+
+                            ((GenericCollection<MethodTag>)method.TaggedValues).Add(taggedValue);
+                        }
+                    }
+
+                    _methodCache.Add(method);
                 }
             }
         }
