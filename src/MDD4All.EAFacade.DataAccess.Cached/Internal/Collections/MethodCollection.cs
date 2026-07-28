@@ -33,7 +33,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 EAAPI.Method apiMethod = (EAAPI.Method)apiElement.Methods.AddNew(Name, Type);
 
                 result = new MethodDataModel(apiMethod);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
@@ -41,7 +41,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result.Name = Name;
                 result.ReturnType = Type;
                 result.ParentID = _owner.ElementID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             _abstractDataCache._methodCache.Add(result);

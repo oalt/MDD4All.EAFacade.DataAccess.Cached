@@ -30,13 +30,13 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 EAAPI.DiagramObject apiDiagramObject = (EAAPI.DiagramObject)apiDiagram.DiagramObjects.AddNew(Name, Type);
 
                 result = new DiagramObjectDataModel(apiDiagramObject);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
                 result = new DiagramObjectDataModel();
                 result.DiagramID = _owner.DiagramID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             Add(result);

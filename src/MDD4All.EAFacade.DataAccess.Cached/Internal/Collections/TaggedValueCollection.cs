@@ -34,14 +34,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 apiElement.TaggedValues.Refresh();
 
                 result = new TaggedValueDataModel(apiTaggedValue);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
                 result = new TaggedValueDataModel();
                 result.Name = Name;
                 result.ElementID = _owner.ElementID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             Add(result);

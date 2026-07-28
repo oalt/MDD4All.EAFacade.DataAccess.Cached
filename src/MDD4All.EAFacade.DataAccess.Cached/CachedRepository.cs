@@ -59,7 +59,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         {
             _packageCache = new List<Package>();
 
-            string xml = _apiRepository.SQLQuery("select * from t_package");
+            string xml = _apiRepository!.SQLQuery("select * from t_package");
 
             XElement rootElement = XElement.Parse(xml);
 
@@ -83,7 +83,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         {
             _elementCache = new List<Element>();
 
-            string xml = _apiRepository.SQLQuery("select * from t_object where Object_Type = 'Package'");
+            string xml = _apiRepository!.SQLQuery("select * from t_object where Object_Type = 'Package'");
 
             XElement rootElement = XElement.Parse(xml);
 
@@ -135,7 +135,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         {
 
 
-            string xml = _apiRepository.SQLQuery("select * from t_object where Object_Type <> 'Package'");
+            string xml = _apiRepository!.SQLQuery("select * from t_object where Object_Type <> 'Package'");
 
             XElement rootElement = XElement.Parse(xml);
 
@@ -203,7 +203,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         {
             _connectorCache = new List<Connector>();
 
-            string xml = _apiRepository.SQLQuery("select * from t_connector");
+            string xml = _apiRepository!.SQLQuery("select * from t_connector");
 
             XElement rootElement = XElement.Parse(xml);
 
@@ -250,7 +250,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         {
             _methodCache = new List<Method>();
 
-            string xml = _apiRepository.SQLQuery("select * from t_operation");
+            string xml = _apiRepository!.SQLQuery("select * from t_operation");
 
             XElement rootElement = XElement.Parse(xml);
 
@@ -321,7 +321,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
         {
             _diagramCache = new List<Diagram>();
 
-            string xml = _apiRepository.SQLQuery("select * from t_diagram");
+            string xml = _apiRepository!.SQLQuery("select * from t_diagram");
 
             XElement rootElement = XElement.Parse(xml);
 
@@ -401,7 +401,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
             }
         }
 
-        public event EventHandler CachingFinished;
+        public event EventHandler? CachingFinished;
 
         public Collection Authors => throw new NotImplementedException();
 
@@ -815,7 +815,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public object AddTab(string TabName, string ControlID)
         {
-            object result = null;
+            object result = null!;
 
             if (_apiRepository != null)
             {
@@ -827,7 +827,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public object AddWindow(string TabName, string ControlID)
         {
-            object result = null;
+            object result = null!;
 
             if (_apiRepository != null)
             {
@@ -1026,7 +1026,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public MDD4All.EAFacade.DataModels.Contracts.Attribute GetAttributeByGuid(string GUID)
         {
-            MDD4All.EAFacade.DataModels.Contracts.Attribute result = null;
+            MDD4All.EAFacade.DataModels.Contracts.Attribute result = null!;
 
             if (_apiRepository != null)
             {
@@ -1047,7 +1047,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public MDD4All.EAFacade.DataModels.Contracts.Attribute GetAttributeByID(int AttributeID)
         {
-            MDD4All.EAFacade.DataModels.Contracts.Attribute result = null;
+            MDD4All.EAFacade.DataModels.Contracts.Attribute result = null!;
 
             if (_apiRepository != null)
             {
@@ -1068,7 +1068,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Connector GetConnectorByGuid(string guid)
         {
-            Connector result = null;
+            Connector result = null!;
 
             result = _connectorCache.Find(connector => connector.ConnectorGUID == guid);
 
@@ -1077,7 +1077,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Connector GetConnectorByID(int connectorID)
         {
-            Connector result = null;
+            Connector result = null!;
 
             result = _connectorCache.Find(connector => connector.ConnectorID == connectorID);
 
@@ -1110,7 +1110,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public object GetContextObject()
         {
-            object result = null;
+            object result = null!;
 
             if (_apiRepository != null)
             {
@@ -1134,7 +1134,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Diagram GetCurrentDiagram()
         {
-            Diagram result = null;
+            Diagram result = null!;
 
             if (_apiRepository != null)
             {
@@ -1167,7 +1167,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public object GetDiagramByGuid(string guid)
         {
-            Diagram result = null;
+            Diagram result = null!;
 
             result = _diagramCache.Find(diagram => diagram.DiagramGUID == guid);
 
@@ -1176,7 +1176,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Diagram GetDiagramByID(int diagramID)
         {
-            Diagram result = null;
+            Diagram result = null!;
 
             result = _diagramCache.Find(diagram => diagram.DiagramID == diagramID);
 
@@ -1185,7 +1185,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Element GetElementByGuid(string guid)
         {
-            Element result = null;
+            Element result = null!;
 
 
             result = _elementCache.Find(element => element.ElementGUID == guid);
@@ -1195,7 +1195,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Element GetElementByID(int ElementID)
         {
-            Element result = null;
+            Element result = null!;
 
 
             result = _elementCache.Find(element => element.ElementID == ElementID);
@@ -1294,7 +1294,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Package GetPackageByID(int PackageID)
         {
-            Package result = null;
+            Package result = null!;
 
 
             result = _packageCache.Find(package => package.PackageID == PackageID);
@@ -1304,7 +1304,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Project GetProjectInterface()
         {
-            Project result = null;
+            Project result = null!;
 
             if (_apiRepository != null)
             {
@@ -1374,7 +1374,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public object GetTreeSelectedObject()
         {
-            object result = null;
+            object result = null!;
 
             if (_apiRepository != null)
             {
@@ -1386,7 +1386,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
         public Package GetTreeSelectedPackage()
         {
-            Package result = null;
+            Package result = null!;
 
             if (_apiRepository != null)
             {

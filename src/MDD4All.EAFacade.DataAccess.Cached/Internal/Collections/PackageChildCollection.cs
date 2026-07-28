@@ -36,14 +36,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
 
                 apiParentPackage.Packages.Refresh();
 
-                result = new PackageDataModel(apiChildPackage, _abstractDataCache, _owner.Repository);
+                result = new PackageDataModel(apiChildPackage, _abstractDataCache, _owner.Repository!);
             }
             else
             {
                 result = new PackageDataModel();
                 result.Name = Name;
                 result.ParentID = _owner.PackageID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
                 result._abstractDataCache = _abstractDataCache;
             }
 

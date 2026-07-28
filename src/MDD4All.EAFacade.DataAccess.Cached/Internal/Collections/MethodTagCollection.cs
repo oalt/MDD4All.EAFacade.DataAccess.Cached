@@ -51,7 +51,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 EAAPI.MethodTag apiMethodTag = (EAAPI.MethodTag)apiMethod.TaggedValues.AddNew(Name, Type);
 
                 result = new MethodTagDataModel(apiMethodTag);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
                 result.ParentElementID = _owner.ParentID;
             }
             else
@@ -59,7 +59,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result = new MethodTagDataModel();
                 result.Name = Name;
                 result.MethodID = _owner.MethodID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
                 result.ParentElementID = _owner.ParentID;
             }
 

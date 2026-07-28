@@ -37,7 +37,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 apiPackage.Diagrams.Refresh();
 
                 result = new DiagramDataModel(apiDiagram);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
@@ -45,7 +45,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result.Name = Name;
                 result.Type = Type;
                 result.PackageID = _owner.PackageID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             _abstractDataCache._diagramCache.Add(result);

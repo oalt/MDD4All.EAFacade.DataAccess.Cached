@@ -34,14 +34,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 apiConnector.TaggedValues.Refresh();
 
                 result = new ConnectorTagDataModel(apiConnectorTag);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
                 result = new ConnectorTagDataModel();
                 result.Name = Name;
                 result.ConnectorID = _owner.ConnectorID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             Add(result);

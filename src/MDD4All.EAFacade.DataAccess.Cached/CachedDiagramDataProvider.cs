@@ -32,7 +32,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                 foreach (XElement diagramObjectRow in diagramObjectRows)
                 {
-                    EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow, null);
+                    EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow, null!);
 
                     result.Add(diagramObject.ElementID);
                 }
@@ -59,7 +59,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                 foreach (XElement diagramObjectRow in diagramObjectRows)
                 {
-                    EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow, null);
+                    EADM.DiagramObjectDataModel diagramObject = new EADM.DiagramObjectDataModel(diagramObjectRow, null!);
 
                     result.Add(diagramObject.DiagramID);                    
                 }

@@ -12,7 +12,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        internal AbstractDataCache _abstractDataCache { get; set; }
+        internal AbstractDataCache _abstractDataCache { get; set; } = null!;
 
         public PackageDataModel()
         {
@@ -252,7 +252,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                Element result = null;
+                Element result = null!;
 
                 result = _abstractDataCache._elementCache.Find(element => element.ElementGUID == PackageGUID);
 

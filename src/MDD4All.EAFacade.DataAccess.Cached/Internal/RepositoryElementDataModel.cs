@@ -4,8 +4,8 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal abstract class RepositoryElementDataModel
     {
-        public Repository Repository { get; set; }
+        public Repository Repository { get; set; } = null!;
 
-        public AbstractDataCache AbstractDataCache { get; set; }
+        public AbstractDataCache AbstractDataCache { get; set; } = null!;
     }
 }

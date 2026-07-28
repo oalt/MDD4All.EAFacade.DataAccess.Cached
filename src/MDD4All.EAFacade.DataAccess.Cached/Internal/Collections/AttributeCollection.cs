@@ -35,14 +35,14 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 apiElement.Attributes.Refresh();
 
                 result = new AttributeDataModel(apiAttribute);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
                 result = new AttributeDataModel();
                 result.Name = Name;
                 result.Type = Type;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             Add(result);

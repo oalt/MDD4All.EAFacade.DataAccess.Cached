@@ -190,7 +190,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string ConnectorGUID { get; private set; }
+        public string ConnectorGUID { get; private set; } = "";
 
         public int ConnectorID { get; private set; }
 

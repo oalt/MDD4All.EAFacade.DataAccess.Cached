@@ -30,13 +30,13 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 EAAPI.DiagramLink apiDiagramLink = (EAAPI.DiagramLink)apiDiagram.DiagramLinks.AddNew(Name, Type);
 
                 result = new DiagramLinkDataModel(apiDiagramLink);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
                 result = new DiagramLinkDataModel();
                 result.DiagramID = _owner.DiagramID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             Add(result);

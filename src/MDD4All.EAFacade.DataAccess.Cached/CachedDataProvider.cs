@@ -32,7 +32,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
             foreach (XElement row in rows)
             {
-                EADM.Element element = new ElementDataModel(row, null, null);
+                EADM.Element element = new ElementDataModel(row, null!, null!);
 
                 // tagged values
                 string taggedValueXml = _repository.SQLQuery("select * from t_objectproperties where Object_ID = " + element.ElementID);
@@ -49,7 +49,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached
 
                     foreach (XElement taggedValueRow in taggedValueRows)
                     {
-                        EADM.TaggedValue taggedValue = new TaggedValueDataModel(taggedValueRow, null);
+                        EADM.TaggedValue taggedValue = new TaggedValueDataModel(taggedValueRow, null!);
 
                         element.TaggedValues.Add(taggedValue);
                     }

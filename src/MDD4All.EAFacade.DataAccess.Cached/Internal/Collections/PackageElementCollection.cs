@@ -37,7 +37,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 apiPackage.Elements.Refresh();
 
                 result = new ElementDataModel(apiElement);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
                 result.AbstractDataCache = _abstractDataCache;
             }
             else
@@ -46,7 +46,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result.Name = Name;
                 result.Type = Type;
                 result.PackageID = _owner.PackageID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
                 result.AbstractDataCache = _abstractDataCache;
             }
 

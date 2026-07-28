@@ -51,7 +51,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 EAAPI.Parameter apiParameter = (EAAPI.Parameter)apiMethod.Parameters.AddNew(Name, Type);
 
                 result = new ParameterDataModel(apiParameter);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
                 result.ParentElementID = _owner.ParentID;
             }
             else
@@ -60,7 +60,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result.Name = Name;
                 result.Type = Type;
                 result.OperationID = _owner.MethodID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
                 result.ParentElementID = _owner.ParentID;
             }
 

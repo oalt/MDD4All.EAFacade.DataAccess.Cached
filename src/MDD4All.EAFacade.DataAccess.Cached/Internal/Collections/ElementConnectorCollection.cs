@@ -37,7 +37,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 apiElement.Connectors.Refresh();
 
                 result = new ConnectorDataModel(apiConnector);
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
             else
             {
@@ -45,7 +45,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
                 result.Name = Name;
                 result.Type = Type;
                 result.ClientID = _owner.ElementID;
-                result.Repository = _owner.Repository;
+                result.Repository = _owner.Repository!;
             }
 
             _abstractDataCache._connectorCache.Add(result);
