@@ -32,9 +32,12 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
             {
                 EAAPI.Connector apiConnector = (EAAPI.Connector)apiElement.Connectors.AddNew(Name, Type);
 
-                apiConnector.Update();
-
-                apiElement.Connectors.Refresh();
+                // Do not call apiConnector.Update() here: a freshly AddNew'd connector
+                // only has its client (source) end set, and EA rejects Update() while
+                // the supplier (target) end is still unset ("Cannot update connector as
+                // either the Start or the End object is NULL"). The caller is expected
+                // to set SupplierID and call Update() once the target is known
+                // (see ElementManipulationExtensions.AddConnector).
 
                 result = new ConnectorDataModel(apiConnector);
                 result.Repository = _owner.Repository!;

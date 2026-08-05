@@ -777,6 +777,17 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             if (ApiConnector != null)
             {
                 result = ApiConnector.Update();
+
+                // The connector may not have been saved yet when this instance was
+                // constructed (see ElementConnectorCollection.AddNew, which returns a
+                // connector before its supplier end is set), so ConnectorID/ConnectorGUID
+                // can still be their unsaved defaults. Re-sync them once EA has actually
+                // assigned real values.
+                if (result)
+                {
+                    ConnectorID = ApiConnector.ConnectorID;
+                    ConnectorGUID = ApiConnector.ConnectorGUID;
+                }
             }
 
             return result;

@@ -32,8 +32,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
             {
                 EAAPI.Element apiChildElement = (EAAPI.Element)apiElement.Elements.AddNew(Name, Type);
 
-                apiChildElement.Update();
-
                 apiElement.Elements.Refresh();
 
                 result = new ElementDataModel(apiChildElement);
