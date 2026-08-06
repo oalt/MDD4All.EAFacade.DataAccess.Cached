@@ -32,6 +32,10 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal.Collections
             {
                 EAAPI.Method apiMethod = (EAAPI.Method)apiElement.Methods.AddNew(Name, Type);
 
+                apiMethod.Update();
+
+                apiElement.Methods.Refresh();
+
                 result = new MethodDataModel(apiMethod);
                 result.Repository = _owner.Repository!;
             }
