@@ -550,7 +550,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             get
             {
-                GenericCollection<Element> result = new GenericCollection<Element>();
+                ElementEmbeddedElementCollection result = new ElementEmbeddedElementCollection(this, AbstractDataCache);
 
                 result.AddRange(AbstractDataCache._elementCache.FindAll(element => element.ParentID == ElementID && (element.Type == "Port" || element.Type == "ActionPin")));
 
