@@ -54,8 +54,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
                 LogXML = tObjectQueryRow.Element("LogXML").Value == "1";
                 CodePath = tObjectQueryRow.Element("CodePath").Value;
                 IsNamespace = tObjectQueryRow.Element("Namespace").Value == "1";
-                BatchSave = int.Parse(tObjectQueryRow.Element("BatchSave").Value);
-                BatchLoad = int.Parse(tObjectQueryRow.Element("BatchLoad").Value);
+
+                int batchSave;
+
+                if (int.TryParse(tObjectQueryRow.Element("BatchSave").Value, out batchSave))
+                {
+                    BatchSave = batchSave;
+                }
+
+                int batchLoad;
+
+                if (int.TryParse(tObjectQueryRow.Element("BatchLoad").Value, out batchLoad))
+                {
+                    BatchLoad = batchLoad;
+                }
 
                 DateTime lastLoadDate;
 
@@ -555,7 +567,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             {
                 _parentID = value;
 
-                if (ApiPackage != null)
+                if (ApiPackage != null && value != 0)
                 {
                     ApiPackage.ParentID = value;
                 }
