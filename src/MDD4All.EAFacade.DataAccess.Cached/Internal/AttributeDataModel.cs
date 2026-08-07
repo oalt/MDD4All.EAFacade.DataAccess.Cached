@@ -1,5 +1,4 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using Attribute = MDD4All.EAFacade.DataModels.Contracts.Attribute;
@@ -9,8 +8,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class AttributeDataModel : RepositoryElementDataModel, Attribute
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public AttributeDataModel()
         {
         }
@@ -19,73 +16,66 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             Repository = repository;
 
-            try
-            {
-                Name = attributeRow.Element("Name").Value;
-                Notes = attributeRow.Element("Notes").Value;
-                Type = attributeRow.Element("Type").Value;
-                AttributeID = int.Parse(attributeRow.Element("ID").Value);
-                Pos = int.Parse(attributeRow.Element("Pos").Value);
-                Visibility = attributeRow.Element("Scope").Value;
-                AttributeGUID = attributeRow.Element("ea_guid").Value;
-                Default = attributeRow.Element("Default").Value;
-                ClassifierID = int.Parse(attributeRow.Element("Classifier").Value);
-                ParentID = int.Parse(attributeRow.Element("Object_ID").Value);
+            _name = attributeRow.Element("Name").Value;
+            _notes = attributeRow.Element("Notes").Value;
+            _type = attributeRow.Element("Type").Value;
+            _attributeID = int.Parse(attributeRow.Element("ID").Value);
+            _pos = int.Parse(attributeRow.Element("Pos").Value);
+            _visibility = attributeRow.Element("Scope").Value;
+            _attributeGUID = attributeRow.Element("ea_guid").Value;
+            _default = attributeRow.Element("Default").Value;
+            _classifierID = int.Parse(attributeRow.Element("Classifier").Value);
+            _parentID = int.Parse(attributeRow.Element("Object_ID").Value);
 
-                Stereotype = attributeRow.Element("Stereotype").Value;
-                Containment = attributeRow.Element("Containment").Value;
-                IsStatic = attributeRow.Element("IsStatic").Value == "1";
-                IsCollection = attributeRow.Element("IsCollection").Value == "1";
-                IsOrdered = attributeRow.Element("IsOrdered").Value == "1";
-                AllowDuplicates = attributeRow.Element("AllowDuplicates").Value == "1";
-                LowerBound = attributeRow.Element("LowerBound").Value;
-                UpperBound = attributeRow.Element("UpperBound").Value;
-                Container = attributeRow.Element("Container").Value;
-                IsDerived = attributeRow.Element("Derived").Value == "1";
-                Length = attributeRow.Element("Length").Value;
-                Precision = attributeRow.Element("Precision").Value;
-                Scale = attributeRow.Element("Scale").Value;
-                IsConst = attributeRow.Element("Const").Value == "1";
-                Style = attributeRow.Element("Style").Value;
-                StyleEx = attributeRow.Element("StyleEx").Value;
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _stereotype = attributeRow.Element("Stereotype").Value;
+            _containment = attributeRow.Element("Containment").Value;
+            _isStatic = attributeRow.Element("IsStatic").Value == "1";
+            _isCollection = attributeRow.Element("IsCollection").Value == "1";
+            _isOrdered = attributeRow.Element("IsOrdered").Value == "1";
+            _allowDuplicates = attributeRow.Element("AllowDuplicates").Value == "1";
+            _lowerBound = attributeRow.Element("LowerBound").Value;
+            _upperBound = attributeRow.Element("UpperBound").Value;
+            _container = attributeRow.Element("Container").Value;
+            _isDerived = attributeRow.Element("Derived").Value == "1";
+            _length = attributeRow.Element("Length").Value;
+            _precision = attributeRow.Element("Precision").Value;
+            _scale = attributeRow.Element("Scale").Value;
+            _isConst = attributeRow.Element("Const").Value == "1";
+            _style = attributeRow.Element("Style").Value;
+            _styleEx = attributeRow.Element("StyleEx").Value;
         }
 
         public AttributeDataModel(EAAPI.Attribute apiAttribute)
         {
             _apiAttribute = apiAttribute;
 
-            Name = apiAttribute.Name;
-            Notes = apiAttribute.Notes;
-            Type = apiAttribute.Type;
-            AttributeID = apiAttribute.AttributeID;
-            Pos = apiAttribute.Pos;
-            Visibility = apiAttribute.Visibility;
-            AttributeGUID = apiAttribute.AttributeGUID;
-            Default = apiAttribute.Default;
-            ClassifierID = apiAttribute.ClassifierID;
-            ParentID = apiAttribute.ParentID;
+            _name = apiAttribute.Name;
+            _notes = apiAttribute.Notes;
+            _type = apiAttribute.Type;
+            _attributeID = apiAttribute.AttributeID;
+            _pos = apiAttribute.Pos;
+            _visibility = apiAttribute.Visibility;
+            _attributeGUID = apiAttribute.AttributeGUID;
+            _default = apiAttribute.Default;
+            _classifierID = apiAttribute.ClassifierID;
+            _parentID = apiAttribute.ParentID;
 
-            Stereotype = apiAttribute.Stereotype;
-            Containment = apiAttribute.Containment;
-            IsStatic = apiAttribute.IsStatic;
-            IsCollection = apiAttribute.IsCollection;
-            IsOrdered = apiAttribute.IsOrdered;
-            AllowDuplicates = apiAttribute.AllowDuplicates;
-            LowerBound = apiAttribute.LowerBound;
-            UpperBound = apiAttribute.UpperBound;
-            Container = apiAttribute.Container;
-            IsDerived = apiAttribute.IsDerived;
-            Length = apiAttribute.Length;
-            Precision = apiAttribute.Precision;
-            Scale = apiAttribute.Scale;
-            IsConst = apiAttribute.IsConst;
-            Style = apiAttribute.Style;
-            StyleEx = apiAttribute.StyleEx;
+            _stereotype = apiAttribute.Stereotype;
+            _containment = apiAttribute.Containment;
+            _isStatic = apiAttribute.IsStatic;
+            _isCollection = apiAttribute.IsCollection;
+            _isOrdered = apiAttribute.IsOrdered;
+            _allowDuplicates = apiAttribute.AllowDuplicates;
+            _lowerBound = apiAttribute.LowerBound;
+            _upperBound = apiAttribute.UpperBound;
+            _container = apiAttribute.Container;
+            _isDerived = apiAttribute.IsDerived;
+            _length = apiAttribute.Length;
+            _precision = apiAttribute.Precision;
+            _scale = apiAttribute.Scale;
+            _isConst = apiAttribute.IsConst;
+            _style = apiAttribute.Style;
+            _styleEx = apiAttribute.StyleEx;
         }
 
         private EAAPI.Attribute? _apiAttribute;
@@ -168,7 +158,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int AttributeID { get; private set; }
+        private int _attributeID;
+
+        public int AttributeID
+        {
+            get
+            {
+                return _attributeID;
+            }
+
+            private set
+            {
+                _attributeID = value;
+            }
+        }
 
         private int _classifierID;
 
@@ -462,7 +465,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int ParentID { get; private set; }
+        private int _parentID;
+
+        public int ParentID
+        {
+            get
+            {
+                return _parentID;
+            }
+
+            private set
+            {
+                _parentID = value;
+            }
+        }
 
         private int _pos;
 

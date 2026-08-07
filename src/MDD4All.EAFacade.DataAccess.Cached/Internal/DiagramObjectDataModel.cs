@@ -1,5 +1,4 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -8,8 +7,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class DiagramObjectDataModel : RepositoryElementDataModel, DiagramObject
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public DiagramObjectDataModel()
         {
 
@@ -19,40 +16,30 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             Repository = repository;
 
-            try
-            {
-                DiagramID = int.Parse(tObjectQueryRow.Element("Diagram_ID").Value);
-                ElementID = int.Parse(tObjectQueryRow.Element("Object_ID").Value);
-                top = int.Parse(tObjectQueryRow.Element("RectTop").Value);
-                left = int.Parse(tObjectQueryRow.Element("RectLeft").Value);
-                right = int.Parse(tObjectQueryRow.Element("RectRight").Value);
-                bottom = int.Parse(tObjectQueryRow.Element("RectBottom").Value);
-                Sequence = int.Parse(tObjectQueryRow.Element("Sequence").Value);
-                Style = tObjectQueryRow.Element("ObjectStyle").Value;
-                InstanceID = int.Parse(tObjectQueryRow.Element("Instance_ID").Value);
-
-
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _diagramID = int.Parse(tObjectQueryRow.Element("Diagram_ID").Value);
+            _elementID = int.Parse(tObjectQueryRow.Element("Object_ID").Value);
+            _top = int.Parse(tObjectQueryRow.Element("RectTop").Value);
+            _left = int.Parse(tObjectQueryRow.Element("RectLeft").Value);
+            _right = int.Parse(tObjectQueryRow.Element("RectRight").Value);
+            _bottom = int.Parse(tObjectQueryRow.Element("RectBottom").Value);
+            _sequence = int.Parse(tObjectQueryRow.Element("Sequence").Value);
+            _style = tObjectQueryRow.Element("ObjectStyle").Value;
+            _instanceID = int.Parse(tObjectQueryRow.Element("Instance_ID").Value);
         }
 
         public DiagramObjectDataModel(EAAPI.DiagramObject apiDiagramObject)
         {
             _apiDiagramObject = apiDiagramObject;
 
-            DiagramID = apiDiagramObject.DiagramID;
-            ElementID = apiDiagramObject.ElementID;
-            top = apiDiagramObject.top;
-            left = apiDiagramObject.left;
-            right = apiDiagramObject.right;
-            bottom = apiDiagramObject.bottom;
-            Sequence = apiDiagramObject.Sequence;
-            Style = apiDiagramObject.Style;
-            InstanceID = apiDiagramObject.InstanceID;
-
+            _diagramID = apiDiagramObject.DiagramID;
+            _elementID = apiDiagramObject.ElementID;
+            _top = apiDiagramObject.top;
+            _left = apiDiagramObject.left;
+            _right = apiDiagramObject.right;
+            _bottom = apiDiagramObject.bottom;
+            _sequence = apiDiagramObject.Sequence;
+            _style = apiDiagramObject.Style;
+            _instanceID = apiDiagramObject.InstanceID;
         }
 
         private EAAPI.DiagramObject? _apiDiagramObject;
@@ -362,7 +349,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public object InstanceGUID { get; private set; } = "";
+        private object _instanceGUID = "";
+
+        public object InstanceGUID
+        {
+            get
+            {
+                return _instanceGUID;
+            }
+
+            private set
+            {
+                _instanceGUID = value;
+            }
+        }
 
         private int _instanceID;
 

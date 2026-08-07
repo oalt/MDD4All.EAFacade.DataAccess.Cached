@@ -1,6 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
 using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
-using NLog;
 using System;
 using System.Linq;
 using System.Xml.Linq;
@@ -10,9 +9,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class PackageDataModel : RepositoryElementDataModel, Package
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
-        internal AbstractDataCache _abstractDataCache { get; set; } = null!;
+        internal AbstractDataCache _abstractDataCache = null!;
 
         public PackageDataModel()
         {
@@ -26,67 +23,59 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             _abstractDataCache = abstractDataCache;
             Repository = repository;
 
-            try
+            _packageID = int.Parse(tObjectQueryRow.Element("Package_ID").Value);
+            _name = tObjectQueryRow.Element("Name").Value;
+            _parentID = int.Parse(tObjectQueryRow.Element("Parent_ID").Value);
+            _created = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
+            _modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
+            _notes = tObjectQueryRow.Element("Notes").Value;
+            _packageGUID = tObjectQueryRow.Element("ea_guid").Value;
+            _flags = tObjectQueryRow.Element("PackageFlags").Value;
+
+            int treePos = 0;
+
+            if (int.TryParse(tObjectQueryRow.Element("TPos").Value, out treePos))
             {
-                PackageID = int.Parse(tObjectQueryRow.Element("Package_ID").Value);
-                Name = tObjectQueryRow.Element("Name").Value;
-                ParentID = int.Parse(tObjectQueryRow.Element("Parent_ID").Value);
-                Created = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
-                Modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
-                Notes = tObjectQueryRow.Element("Notes").Value;
-                PackageGUID = tObjectQueryRow.Element("ea_guid").Value;
-                Flags = tObjectQueryRow.Element("PackageFlags").Value;
-
-                int treePos = 0;
-
-                if (int.TryParse(tObjectQueryRow.Element("TPos").Value, out treePos))
-                {
-                    TreePos = treePos;
-                }
-
-                XMLPath = tObjectQueryRow.Element("XMLPath").Value;
-                IsControlled = tObjectQueryRow.Element("IsControlled").Value == "1";
-                Version = tObjectQueryRow.Element("Version").Value;
-                IsProtected = tObjectQueryRow.Element("Protected").Value == "1";
-                Owner = tObjectQueryRow.Element("PkgOwner").Value;
-                UMLVersion = tObjectQueryRow.Element("UMLVersion").Value;
-                UseDTD = tObjectQueryRow.Element("UseDTD").Value == "1";
-                LogXML = tObjectQueryRow.Element("LogXML").Value == "1";
-                CodePath = tObjectQueryRow.Element("CodePath").Value;
-                IsNamespace = tObjectQueryRow.Element("Namespace").Value == "1";
-
-                int batchSave;
-
-                if (int.TryParse(tObjectQueryRow.Element("BatchSave").Value, out batchSave))
-                {
-                    BatchSave = batchSave;
-                }
-
-                int batchLoad;
-
-                if (int.TryParse(tObjectQueryRow.Element("BatchLoad").Value, out batchLoad))
-                {
-                    BatchLoad = batchLoad;
-                }
-
-                DateTime lastLoadDate;
-
-                if (DateTime.TryParse(tObjectQueryRow.Element("LastLoadDate").Value, out lastLoadDate))
-                {
-                    LastLoadDate = lastLoadDate;
-                }
-
-                DateTime lastSaveDate;
-
-                if (DateTime.TryParse(tObjectQueryRow.Element("LastSaveDate").Value, out lastSaveDate))
-                {
-                    LastSaveDate = lastSaveDate;
-                }
-
+                _treePos = treePos;
             }
-            catch (Exception exception)
+
+            _xmlPath = tObjectQueryRow.Element("XMLPath").Value;
+            _isControlled = tObjectQueryRow.Element("IsControlled").Value == "1";
+            _version = tObjectQueryRow.Element("Version").Value;
+            _isProtected = tObjectQueryRow.Element("Protected").Value == "1";
+            _owner = tObjectQueryRow.Element("PkgOwner").Value;
+            _umlVersion = tObjectQueryRow.Element("UMLVersion").Value;
+            _useDTD = tObjectQueryRow.Element("UseDTD").Value == "1";
+            _logXML = tObjectQueryRow.Element("LogXML").Value == "1";
+            _codePath = tObjectQueryRow.Element("CodePath").Value;
+            _isNamespace = tObjectQueryRow.Element("Namespace").Value == "1";
+
+            int batchSave;
+
+            if (int.TryParse(tObjectQueryRow.Element("BatchSave").Value, out batchSave))
             {
-                logger.Debug(exception);
+                _batchSave = batchSave;
+            }
+
+            int batchLoad;
+
+            if (int.TryParse(tObjectQueryRow.Element("BatchLoad").Value, out batchLoad))
+            {
+                _batchLoad = batchLoad;
+            }
+
+            DateTime lastLoadDate;
+
+            if (DateTime.TryParse(tObjectQueryRow.Element("LastLoadDate").Value, out lastLoadDate))
+            {
+                _lastLoadDate = lastLoadDate;
+            }
+
+            DateTime lastSaveDate;
+
+            if (DateTime.TryParse(tObjectQueryRow.Element("LastSaveDate").Value, out lastSaveDate))
+            {
+                _lastSaveDate = lastSaveDate;
             }
         }
 
@@ -99,31 +88,31 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
             _apiPackage = apiPackage;
 
-            PackageID = apiPackage.PackageID;
-            Name = apiPackage.Name;
-            ParentID = apiPackage.ParentID;
-            Created = apiPackage.Created;
-            Modified = apiPackage.Modified;
-            Notes = apiPackage.Notes;
-            PackageGUID = apiPackage.PackageGUID;
-            TreePos = apiPackage.TreePos;
-            Alias = apiPackage.Alias;
-            Flags = apiPackage.Flags;
+            _packageID = apiPackage.PackageID;
+            _name = apiPackage.Name;
+            _parentID = apiPackage.ParentID;
+            _created = apiPackage.Created;
+            _modified = apiPackage.Modified;
+            _notes = apiPackage.Notes;
+            _packageGUID = apiPackage.PackageGUID;
+            _treePos = apiPackage.TreePos;
+            _alias = apiPackage.Alias;
+            _flags = apiPackage.Flags;
 
-            XMLPath = apiPackage.XMLPath;
-            IsControlled = apiPackage.IsControlled;
-            Version = apiPackage.Version;
-            IsProtected = apiPackage.IsProtected;
-            Owner = apiPackage.Owner;
-            UMLVersion = apiPackage.UMLVersion;
-            UseDTD = apiPackage.UseDTD;
-            LogXML = apiPackage.LogXML;
-            CodePath = apiPackage.CodePath;
-            IsNamespace = apiPackage.IsNamespace;
-            BatchSave = apiPackage.BatchSave;
-            BatchLoad = apiPackage.BatchLoad;
-            LastLoadDate = apiPackage.LastLoadDate;
-            LastSaveDate = apiPackage.LastSaveDate;
+            _xmlPath = apiPackage.XMLPath;
+            _isControlled = apiPackage.IsControlled;
+            _version = apiPackage.Version;
+            _isProtected = apiPackage.IsProtected;
+            _owner = apiPackage.Owner;
+            _umlVersion = apiPackage.UMLVersion;
+            _useDTD = apiPackage.UseDTD;
+            _logXML = apiPackage.LogXML;
+            _codePath = apiPackage.CodePath;
+            _isNamespace = apiPackage.IsNamespace;
+            _batchSave = apiPackage.BatchSave;
+            _batchLoad = apiPackage.BatchLoad;
+            _lastLoadDate = apiPackage.LastLoadDate;
+            _lastSaveDate = apiPackage.LastSaveDate;
         }
 
         private EAAPI.Package? _apiPackage;
@@ -533,7 +522,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int PackageID { get; private set; }
+        private int _packageID;
+
+        public int PackageID
+        {
+            get
+            {
+                return _packageID;
+            }
+
+            private set
+            {
+                _packageID = value;
+            }
+        }
 
         public Collection Packages
         {

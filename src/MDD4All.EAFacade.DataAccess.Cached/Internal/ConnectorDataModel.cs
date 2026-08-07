@@ -1,6 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
 using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -9,101 +8,91 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class ConnectorDataModel : RepositoryElementDataModel, Connector
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public ConnectorDataModel()
         {
-            TaggedValues = new ConnectorTagCollection(this);
+            _taggedValues = new ConnectorTagCollection(this);
         }
 
         public ConnectorDataModel(XElement tConnectorQueryRow, Repository repository)
         {
-            TaggedValues = new ConnectorTagCollection(this);
+            _taggedValues = new ConnectorTagCollection(this);
 
             Repository = repository;
 
-            try
-            {
-                ConnectorID = int.Parse(tConnectorQueryRow.Element("Connector_ID").Value);
-                Name = tConnectorQueryRow.Element("Name").Value;
-                Direction = tConnectorQueryRow.Element("Direction").Value;
-                Notes = tConnectorQueryRow.Element("Notes").Value;
-                Type = tConnectorQueryRow.Element("Connector_Type").Value;
-                Subtype = tConnectorQueryRow.Element("SubType").Value;
-                ClientID = int.Parse(tConnectorQueryRow.Element("Start_Object_ID").Value);
-                SupplierID = int.Parse(tConnectorQueryRow.Element("End_Object_ID").Value);
+            _connectorID = int.Parse(tConnectorQueryRow.Element("Connector_ID").Value);
+            _name = tConnectorQueryRow.Element("Name").Value;
+            _direction = tConnectorQueryRow.Element("Direction").Value;
+            _notes = tConnectorQueryRow.Element("Notes").Value;
+            _type = tConnectorQueryRow.Element("Connector_Type").Value;
+            _subtype = tConnectorQueryRow.Element("SubType").Value;
+            _clientID = int.Parse(tConnectorQueryRow.Element("Start_Object_ID").Value);
+            _supplierID = int.Parse(tConnectorQueryRow.Element("End_Object_ID").Value);
 
-                Stereotype = tConnectorQueryRow.Element("Stereotype").Value;
+            _stereotype = tConnectorQueryRow.Element("Stereotype").Value;
 
-                ConnectorGUID = tConnectorQueryRow.Element("ea_guid").Value;
+            _connectorGUID = tConnectorQueryRow.Element("ea_guid").Value;
 
-                StartPointX = int.Parse(tConnectorQueryRow.Element("PtStartX").Value);
-                StartPointY = int.Parse(tConnectorQueryRow.Element("PtStartY").Value);
-                EndPointX = int.Parse(tConnectorQueryRow.Element("PtEndX").Value);
-                EndPointY = int.Parse(tConnectorQueryRow.Element("PtEndY").Value);
-                SequenceNo = int.Parse(tConnectorQueryRow.Element("SeqNo").Value);
-                RouteStyle = int.Parse(tConnectorQueryRow.Element("RouteStyle").Value);
-                Color = int.Parse(tConnectorQueryRow.Element("LineColor").Value);
-                DiagramID = int.Parse(tConnectorQueryRow.Element("DiagramID").Value);
+            _startPointX = int.Parse(tConnectorQueryRow.Element("PtStartX").Value);
+            _startPointY = int.Parse(tConnectorQueryRow.Element("PtStartY").Value);
+            _endPointX = int.Parse(tConnectorQueryRow.Element("PtEndX").Value);
+            _endPointY = int.Parse(tConnectorQueryRow.Element("PtEndY").Value);
+            _sequenceNo = int.Parse(tConnectorQueryRow.Element("SeqNo").Value);
+            _routeStyle = int.Parse(tConnectorQueryRow.Element("RouteStyle").Value);
+            _color = int.Parse(tConnectorQueryRow.Element("LineColor").Value);
+            _diagramID = int.Parse(tConnectorQueryRow.Element("DiagramID").Value);
 
-                VirtualInheritance = tConnectorQueryRow.Element("VirtualInheritance").Value;
-                StateFlags = tConnectorQueryRow.Element("StateFlags").Value;
-                StyleEx = tConnectorQueryRow.Element("StyleEx").Value;
-                EventFlags = tConnectorQueryRow.Element("EventFlags").Value;
+            _virtualInheritance = tConnectorQueryRow.Element("VirtualInheritance").Value;
+            _stateFlags = tConnectorQueryRow.Element("StateFlags").Value;
+            _styleEx = tConnectorQueryRow.Element("StyleEx").Value;
+            _eventFlags = tConnectorQueryRow.Element("EventFlags").Value;
 
-                IsRoot = tConnectorQueryRow.Element("IsRoot").Value == "1";
-                IsLeaf = tConnectorQueryRow.Element("IsLeaf").Value == "1";
-                IsSpec = tConnectorQueryRow.Element("IsSpec").Value == "1";
+            _isRoot = tConnectorQueryRow.Element("IsRoot").Value == "1";
+            _isLeaf = tConnectorQueryRow.Element("IsLeaf").Value == "1";
+            _isSpec = tConnectorQueryRow.Element("IsSpec").Value == "1";
 
-                ClientEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Source", repository, ConnectorID);
-                SupplierEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Destination", repository, ConnectorID);
-
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _clientEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Source", repository, ConnectorID);
+            _supplierEnd = new ConnectorEndDataModel(tConnectorQueryRow, "Destination", repository, ConnectorID);
         }
 
         public ConnectorDataModel(EAAPI.Connector apiConnector)
         {
-            TaggedValues = new ConnectorTagCollection(this);
+            _taggedValues = new ConnectorTagCollection(this);
 
             _apiConnector = apiConnector;
 
-            ConnectorID = apiConnector.ConnectorID;
-            Name = apiConnector.Name;
-            Direction = apiConnector.Direction;
-            Notes = apiConnector.Notes;
-            Type = apiConnector.Type;
-            Subtype = apiConnector.Subtype;
-            ClientID = apiConnector.ClientID;
-            SupplierID = apiConnector.SupplierID;
+            _connectorID = apiConnector.ConnectorID;
+            _name = apiConnector.Name;
+            _direction = apiConnector.Direction;
+            _notes = apiConnector.Notes;
+            _type = apiConnector.Type;
+            _subtype = apiConnector.Subtype;
+            _clientID = apiConnector.ClientID;
+            _supplierID = apiConnector.SupplierID;
 
-            Stereotype = apiConnector.Stereotype;
+            _stereotype = apiConnector.Stereotype;
 
-            ConnectorGUID = apiConnector.ConnectorGUID;
+            _connectorGUID = apiConnector.ConnectorGUID;
 
-            StartPointX = apiConnector.StartPointX;
-            StartPointY = apiConnector.StartPointY;
-            EndPointX = apiConnector.EndPointX;
-            EndPointY = apiConnector.EndPointY;
-            SequenceNo = apiConnector.SequenceNo;
-            RouteStyle = apiConnector.RouteStyle;
-            Color = apiConnector.Color;
-            DiagramID = apiConnector.DiagramID;
+            _startPointX = apiConnector.StartPointX;
+            _startPointY = apiConnector.StartPointY;
+            _endPointX = apiConnector.EndPointX;
+            _endPointY = apiConnector.EndPointY;
+            _sequenceNo = apiConnector.SequenceNo;
+            _routeStyle = apiConnector.RouteStyle;
+            _color = apiConnector.Color;
+            _diagramID = apiConnector.DiagramID;
 
-            VirtualInheritance = apiConnector.VirtualInheritance;
-            StateFlags = apiConnector.StateFlags;
-            StyleEx = apiConnector.StyleEx;
-            EventFlags = apiConnector.EventFlags;
+            _virtualInheritance = apiConnector.VirtualInheritance;
+            _stateFlags = apiConnector.StateFlags;
+            _styleEx = apiConnector.StyleEx;
+            _eventFlags = apiConnector.EventFlags;
 
-            IsRoot = apiConnector.IsRoot;
-            IsLeaf = apiConnector.IsLeaf;
-            IsSpec = apiConnector.IsSpec;
+            _isRoot = apiConnector.IsRoot;
+            _isLeaf = apiConnector.IsLeaf;
+            _isSpec = apiConnector.IsSpec;
 
-            ClientEnd = new ConnectorEndDataModel(apiConnector.ClientEnd);
-            SupplierEnd = new ConnectorEndDataModel(apiConnector.SupplierEnd);
+            _clientEnd = new ConnectorEndDataModel(apiConnector.ClientEnd);
+            _supplierEnd = new ConnectorEndDataModel(apiConnector.SupplierEnd);
         }
 
         private EAAPI.Connector? _apiConnector;
@@ -148,7 +137,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Element AssociationClass => throw new NotImplementedException();
 
-        public ConnectorEnd ClientEnd { get; set; } = new ConnectorEndDataModel();
+        private ConnectorEnd _clientEnd = new ConnectorEndDataModel();
+
+        public ConnectorEnd ClientEnd
+        {
+            get
+            {
+                return _clientEnd;
+            }
+
+            set
+            {
+                _clientEnd = value;
+            }
+        }
 
         private int _clientID;
 
@@ -190,9 +192,35 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string ConnectorGUID { get; private set; } = "";
+        private string _connectorGUID = "";
 
-        public int ConnectorID { get; private set; }
+        public string ConnectorGUID
+        {
+            get
+            {
+                return _connectorGUID;
+            }
+
+            private set
+            {
+                _connectorGUID = value;
+            }
+        }
+
+        private int _connectorID;
+
+        public int ConnectorID
+        {
+            get
+            {
+                return _connectorID;
+            }
+
+            private set
+            {
+                _connectorID = value;
+            }
+        }
 
         public Collection Constraints => throw new NotImplementedException();
 
@@ -614,7 +642,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public ConnectorEnd SupplierEnd { get; set; } = new ConnectorEndDataModel();
+        private ConnectorEnd _supplierEnd = new ConnectorEndDataModel();
+
+        public ConnectorEnd SupplierEnd
+        {
+            get
+            {
+                return _supplierEnd;
+            }
+
+            set
+            {
+                _supplierEnd = value;
+            }
+        }
 
         private int _supplierID;
 
@@ -636,7 +677,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public GenericCollection<ConnectorTag> TaggedValues { get; set; }
+        private GenericCollection<ConnectorTag> _taggedValues = null!;
+
+        public GenericCollection<ConnectorTag> TaggedValues
+        {
+            get
+            {
+                return _taggedValues;
+            }
+
+            set
+            {
+                _taggedValues = value;
+            }
+        }
 
         public Collection TemplateBindings => throw new NotImplementedException();
 

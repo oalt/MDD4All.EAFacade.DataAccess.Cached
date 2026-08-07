@@ -1,6 +1,5 @@
 using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -9,87 +8,78 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class MethodDataModel : RepositoryElementDataModel, Method
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public MethodDataModel()
         {
-            Parameters = new ParameterCollection(this);
-            TaggedValues = new MethodTagCollection(this);
+            _parameters = new ParameterCollection(this);
+            _taggedValues = new MethodTagCollection(this);
         }
 
         public MethodDataModel(XElement operationRow, Repository repository)
         {
-            Parameters = new ParameterCollection(this);
-            TaggedValues = new MethodTagCollection(this);
+            _parameters = new ParameterCollection(this);
+            _taggedValues = new MethodTagCollection(this);
 
             Repository = repository;
 
-            try
-            {
-                MethodID = int.Parse(operationRow.Element("OperationID").Value);
-                ParentID = int.Parse(operationRow.Element("Object_ID").Value);
-                Name = operationRow.Element("Name").Value;
-                Visibility = operationRow.Element("Scope").Value;
-                ReturnType = operationRow.Element("Type").Value;
-                ReturnIsArray = operationRow.Element("ReturnArray").Value == "1";
-                Stereotype = operationRow.Element("Stereotype").Value;
-                IsStatic = operationRow.Element("IsStatic").Value == "1";
-                Concurrency = operationRow.Element("Concurrency").Value;
-                Notes = operationRow.Element("Notes").Value;
-                Behavior = operationRow.Element("Behaviour").Value;
-                Abstract = operationRow.Element("Abstract").Value == "1";
-                IsSynchronized = operationRow.Element("Synchronized").Value == "1";
-                Pos = int.Parse(operationRow.Element("Pos").Value);
-                IsConst = operationRow.Element("Const").Value == "1";
-                Style = operationRow.Element("Style").Value;
-                IsPure = operationRow.Element("Pure").Value == "1";
-                ClassifierID = operationRow.Element("Classifier").Value;
-                Code = operationRow.Element("Code").Value;
-                IsRoot = operationRow.Element("IsRoot").Value == "1";
-                IsLeaf = operationRow.Element("IsLeaf").Value == "1";
-                IsQuery = operationRow.Element("IsQuery").Value == "1";
-                StateFlags = operationRow.Element("StateFlags").Value;
-                MethodGUID = operationRow.Element("ea_guid").Value;
-                StyleEx = operationRow.Element("StyleEx").Value;
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _methodID = int.Parse(operationRow.Element("OperationID").Value);
+            _parentID = int.Parse(operationRow.Element("Object_ID").Value);
+            _name = operationRow.Element("Name").Value;
+            _visibility = operationRow.Element("Scope").Value;
+            _returnType = operationRow.Element("Type").Value;
+            _returnIsArray = operationRow.Element("ReturnArray").Value == "1";
+            _stereotype = operationRow.Element("Stereotype").Value;
+            _isStatic = operationRow.Element("IsStatic").Value == "1";
+            _concurrency = operationRow.Element("Concurrency").Value;
+            _notes = operationRow.Element("Notes").Value;
+            _behavior = operationRow.Element("Behaviour").Value;
+            _abstract = operationRow.Element("Abstract").Value == "1";
+            _isSynchronized = operationRow.Element("Synchronized").Value == "1";
+            _pos = int.Parse(operationRow.Element("Pos").Value);
+            _isConst = operationRow.Element("Const").Value == "1";
+            _style = operationRow.Element("Style").Value;
+            _isPure = operationRow.Element("Pure").Value == "1";
+            _classifierID = operationRow.Element("Classifier").Value;
+            _code = operationRow.Element("Code").Value;
+            _isRoot = operationRow.Element("IsRoot").Value == "1";
+            _isLeaf = operationRow.Element("IsLeaf").Value == "1";
+            _isQuery = operationRow.Element("IsQuery").Value == "1";
+            _stateFlags = operationRow.Element("StateFlags").Value;
+            _methodGUID = operationRow.Element("ea_guid").Value;
+            _styleEx = operationRow.Element("StyleEx").Value;
         }
 
         public MethodDataModel(EAAPI.Method apiMethod)
         {
-            Parameters = new ParameterCollection(this);
-            TaggedValues = new MethodTagCollection(this);
+            _parameters = new ParameterCollection(this);
+            _taggedValues = new MethodTagCollection(this);
 
             _apiMethod = apiMethod;
 
-            MethodID = apiMethod.MethodID;
-            ParentID = apiMethod.ParentID;
-            Name = apiMethod.Name;
-            Visibility = apiMethod.Visibility;
-            ReturnType = apiMethod.ReturnType;
-            ReturnIsArray = apiMethod.ReturnIsArray;
-            Stereotype = apiMethod.Stereotype;
-            IsStatic = apiMethod.IsStatic;
-            Concurrency = apiMethod.Concurrency;
-            Notes = apiMethod.Notes;
-            Behavior = apiMethod.Behavior;
-            Abstract = apiMethod.Abstract;
-            IsSynchronized = apiMethod.IsSynchronized;
-            Pos = apiMethod.Pos;
-            IsConst = apiMethod.IsConst;
-            Style = apiMethod.Style;
-            IsPure = apiMethod.IsPure;
-            ClassifierID = apiMethod.ClassifierID;
-            Code = apiMethod.Code;
-            IsRoot = apiMethod.IsRoot;
-            IsLeaf = apiMethod.IsLeaf;
-            IsQuery = apiMethod.IsQuery;
-            StateFlags = apiMethod.StateFlags;
-            MethodGUID = apiMethod.MethodGUID;
-            StyleEx = apiMethod.StyleEx;
+            _methodID = apiMethod.MethodID;
+            _parentID = apiMethod.ParentID;
+            _name = apiMethod.Name;
+            _visibility = apiMethod.Visibility;
+            _returnType = apiMethod.ReturnType;
+            _returnIsArray = apiMethod.ReturnIsArray;
+            _stereotype = apiMethod.Stereotype;
+            _isStatic = apiMethod.IsStatic;
+            _concurrency = apiMethod.Concurrency;
+            _notes = apiMethod.Notes;
+            _behavior = apiMethod.Behavior;
+            _abstract = apiMethod.Abstract;
+            _isSynchronized = apiMethod.IsSynchronized;
+            _pos = apiMethod.Pos;
+            _isConst = apiMethod.IsConst;
+            _style = apiMethod.Style;
+            _isPure = apiMethod.IsPure;
+            _classifierID = apiMethod.ClassifierID;
+            _code = apiMethod.Code;
+            _isRoot = apiMethod.IsRoot;
+            _isLeaf = apiMethod.IsLeaf;
+            _isQuery = apiMethod.IsQuery;
+            _stateFlags = apiMethod.StateFlags;
+            _methodGUID = apiMethod.MethodGUID;
+            _styleEx = apiMethod.StyleEx;
         }
 
         private EAAPI.Method? _apiMethod;
@@ -428,7 +418,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int MethodID { get; set; }
+        private int _methodID;
+
+        public int MethodID
+        {
+            get
+            {
+                return _methodID;
+            }
+
+            set
+            {
+                _methodID = value;
+            }
+        }
 
         private string _name = "";
 
@@ -478,9 +481,35 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public Collection Parameters { get; set; }
+        private Collection _parameters = null!;
 
-        public int ParentID { get; set; }
+        public Collection Parameters
+        {
+            get
+            {
+                return _parameters;
+            }
+
+            set
+            {
+                _parameters = value;
+            }
+        }
+
+        private int _parentID;
+
+        public int ParentID
+        {
+            get
+            {
+                return _parentID;
+            }
+
+            set
+            {
+                _parentID = value;
+            }
+        }
 
         private int _pos;
 
@@ -646,7 +675,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public Collection TaggedValues { get; set; }
+        private Collection _taggedValues = null!;
+
+        public Collection TaggedValues
+        {
+            get
+            {
+                return _taggedValues;
+            }
+
+            set
+            {
+                _taggedValues = value;
+            }
+        }
 
         private string _throws = "";
 

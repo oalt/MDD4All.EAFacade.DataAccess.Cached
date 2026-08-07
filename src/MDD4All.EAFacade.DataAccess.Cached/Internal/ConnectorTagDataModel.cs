@@ -1,5 +1,4 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -8,8 +7,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class ConnectorTagDataModel : RepositoryElementDataModel, ConnectorTag
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public ConnectorTagDataModel()
         {
         }
@@ -18,31 +15,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             Repository = repository;
 
-            try
-            {
-                Name = tConnectorTagRow.Element("Property").Value;
-                Notes = tConnectorTagRow.Element("NOTES").Value;
-                Value = tConnectorTagRow.Element("VALUE").Value;
-                TagID = int.Parse(tConnectorTagRow.Element("PropertyID").Value);
-                TagGUID = tConnectorTagRow.Element("ea_guid").Value;
-                ConnectorID = int.Parse(tConnectorTagRow.Element("ElementID").Value);
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _name = tConnectorTagRow.Element("Property").Value;
+            _notes = tConnectorTagRow.Element("NOTES").Value;
+            _value = tConnectorTagRow.Element("VALUE").Value;
+            _tagID = int.Parse(tConnectorTagRow.Element("PropertyID").Value);
+            _tagGUID = tConnectorTagRow.Element("ea_guid").Value;
+            _connectorID = int.Parse(tConnectorTagRow.Element("ElementID").Value);
         }
 
         public ConnectorTagDataModel(EAAPI.ConnectorTag apiConnectorTag)
         {
             _apiConnectorTag = apiConnectorTag;
 
-            Name = apiConnectorTag.Name;
-            Notes = apiConnectorTag.Notes;
-            Value = apiConnectorTag.Value;
-            ConnectorID = apiConnectorTag.ConnectorID;
-            TagID = apiConnectorTag.TagID;
-            TagGUID = apiConnectorTag.TagGUID;
+            _name = apiConnectorTag.Name;
+            _notes = apiConnectorTag.Notes;
+            _value = apiConnectorTag.Value;
+            _connectorID = apiConnectorTag.ConnectorID;
+            _tagID = apiConnectorTag.TagID;
+            _tagGUID = apiConnectorTag.TagGUID;
         }
 
         private EAAPI.ConnectorTag? _apiConnectorTag;
@@ -169,7 +159,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int TagID { get; private set; }
+        private int _tagID;
+
+        public int TagID
+        {
+            get
+            {
+                return _tagID;
+            }
+
+            private set
+            {
+                _tagID = value;
+            }
+        }
 
         private string _value = "";
 

@@ -1,5 +1,4 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -8,8 +7,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class MethodTagDataModel : RepositoryElementDataModel, MethodTag
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public MethodTagDataModel()
         {
         }
@@ -18,34 +15,40 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             Repository = repository;
 
-            try
-            {
-                Name = operationTagRow.Element("Property").Value;
-                Notes = operationTagRow.Element("NOTES").Value;
-                Value = operationTagRow.Element("VALUE").Value;
-                TagID = int.Parse(operationTagRow.Element("PropertyID").Value);
-                TagGUID = operationTagRow.Element("ea_guid").Value;
-                MethodID = int.Parse(operationTagRow.Element("ElementID").Value);
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _name = operationTagRow.Element("Property").Value;
+            _notes = operationTagRow.Element("NOTES").Value;
+            _value = operationTagRow.Element("VALUE").Value;
+            _tagID = int.Parse(operationTagRow.Element("PropertyID").Value);
+            _tagGUID = operationTagRow.Element("ea_guid").Value;
+            _methodID = int.Parse(operationTagRow.Element("ElementID").Value);
         }
 
         public MethodTagDataModel(EAAPI.MethodTag apiMethodTag)
         {
             _apiMethodTag = apiMethodTag;
 
-            Name = apiMethodTag.Name;
-            Notes = apiMethodTag.Notes;
-            Value = apiMethodTag.Value;
-            MethodID = apiMethodTag.MethodID;
-            TagID = apiMethodTag.TagID;
-            TagGUID = apiMethodTag.TagGUID;
+            _name = apiMethodTag.Name;
+            _notes = apiMethodTag.Notes;
+            _value = apiMethodTag.Value;
+            _methodID = apiMethodTag.MethodID;
+            _tagID = apiMethodTag.TagID;
+            _tagGUID = apiMethodTag.TagGUID;
         }
 
-        internal int ParentElementID { get; set; }
+        private int _parentElementID;
+
+        internal int ParentElementID
+        {
+            get
+            {
+                return _parentElementID;
+            }
+
+            set
+            {
+                _parentElementID = value;
+            }
+        }
 
         private EAAPI.MethodTag? _apiMethodTag;
 
@@ -93,7 +96,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public string FQName => throw new NotImplementedException();
 
-        public int MethodID { get; set; }
+        private int _methodID;
+
+        public int MethodID
+        {
+            get
+            {
+                return _methodID;
+            }
+
+            set
+            {
+                _methodID = value;
+            }
+        }
 
         private string _name = "";
 
@@ -163,7 +179,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int TagID { get; private set; }
+        private int _tagID;
+
+        public int TagID
+        {
+            get
+            {
+                return _tagID;
+            }
+
+            private set
+            {
+                _tagID = value;
+            }
+        }
 
         private string _value = "";
 

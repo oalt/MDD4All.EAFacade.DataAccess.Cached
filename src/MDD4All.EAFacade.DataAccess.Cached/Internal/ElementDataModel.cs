@@ -1,6 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
 using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -10,125 +9,114 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class ElementDataModel : RepositoryElementDataModel, Element
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public ElementDataModel()
         {
-            TaggedValues = new TaggedValueCollection(this);
-            Attributes = new AttributeCollection(this);
+            _taggedValues = new TaggedValueCollection(this);
+            _attributes = new AttributeCollection(this);
         }
 
         public ElementDataModel(XElement tObjectQueryRow,
                                 AbstractDataCache abstractDataCache,
                                 Repository repository)
         {
-            TaggedValues = new TaggedValueCollection(this);
-            Attributes = new AttributeCollection(this);
+            _taggedValues = new TaggedValueCollection(this);
+            _attributes = new AttributeCollection(this);
 
             Repository = repository;
 
             AbstractDataCache = abstractDataCache;
 
-            try
+            _elementID = int.Parse(tObjectQueryRow.Element("Object_ID").Value);
+            _type = tObjectQueryRow.Element("Object_Type").Value;
+            _name = tObjectQueryRow.Element("Name").Value;
+            _notes = tObjectQueryRow.Element("Note").Value;
+            _packageID = int.Parse(tObjectQueryRow.Element("Package_ID").Value);
+            _stereotype = tObjectQueryRow.Element("Stereotype").Value;
+            _elementGUID = tObjectQueryRow.Element("ea_guid").Value;
+            _parentID = int.Parse(tObjectQueryRow.Element("ParentID").Value);
+            _created = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
+            _modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
+            _classifierID = int.Parse(tObjectQueryRow.Element("Classifier").Value);
+
+            _pdata1 = tObjectQueryRow.Element("PDATA1").Value;
+            _pdata2 = tObjectQueryRow.Element("PDATA2").Value;
+            _pdata3 = tObjectQueryRow.Element("PDATA3").Value;
+            _pdata4 = tObjectQueryRow.Element("PDATA4").Value;
+            _pdata5 = tObjectQueryRow.Element("PDATA5").Value;
+
+            PropertyType = 0;
+
+            int treePos = 0;
+
+            if (int.TryParse(tObjectQueryRow.Element("TPos").Value, out treePos))
             {
-                ElementID = int.Parse(tObjectQueryRow.Element("Object_ID").Value);
-                Type = tObjectQueryRow.Element("Object_Type").Value;
-                Name = tObjectQueryRow.Element("Name").Value;
-                Notes = tObjectQueryRow.Element("Note").Value;
-                PackageID = int.Parse(tObjectQueryRow.Element("Package_ID").Value);
-                Stereotype = tObjectQueryRow.Element("Stereotype").Value;
-                ElementGUID = tObjectQueryRow.Element("ea_guid").Value;
-                ParentID = int.Parse(tObjectQueryRow.Element("ParentID").Value);
-                Created = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
-                Modified = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
-                ClassifierID = int.Parse(tObjectQueryRow.Element("Classifier").Value);
-
-                Pdata1 = tObjectQueryRow.Element("PDATA1").Value;
-                Pdata2 = tObjectQueryRow.Element("PDATA2").Value;
-                Pdata3 = tObjectQueryRow.Element("PDATA3").Value;
-                Pdata4 = tObjectQueryRow.Element("PDATA4").Value;
-                Pdata5 = tObjectQueryRow.Element("PDATA5").Value;
-
-                PropertyType = 0;
-
-                int treePos = 0;
-
-                if (int.TryParse(tObjectQueryRow.Element("TPos").Value, out treePos))
-                {
-                    TreePos = treePos;
-                }
-
-                Alias = tObjectQueryRow.Element("Alias").Value;
-                RunState = tObjectQueryRow.Element("RunState").Value;
-
-                Version = tObjectQueryRow.Element("Version").Value;
-                Abstract = tObjectQueryRow.Element("Abstract").Value;
-                Complexity = tObjectQueryRow.Element("Complexity").Value;
-                Status = tObjectQueryRow.Element("Status").Value;
-                Visibility = tObjectQueryRow.Element("Visibility").Value;
-                Persistence = tObjectQueryRow.Element("Persistence").Value;
-                Gentype = tObjectQueryRow.Element("GenType").Value;
-                Genfile = tObjectQueryRow.Element("GenFile").Value;
-                Header1 = tObjectQueryRow.Element("Header1").Value;
-                Header2 = tObjectQueryRow.Element("Header2").Value;
-                Phase = tObjectQueryRow.Element("Phase").Value;
-                Genlinks = tObjectQueryRow.Element("GenLinks").Value;
-                Multiplicity = tObjectQueryRow.Element("Multiplicity").Value;
-                ActionFlags = tObjectQueryRow.Element("ActionFlags").Value;
-
-                IsRoot = tObjectQueryRow.Element("IsRoot").Value == "1";
-                IsLeaf = tObjectQueryRow.Element("IsLeaf").Value == "1";
-                IsSpec = tObjectQueryRow.Element("IsSpec").Value == "1";
-                IsActive = tObjectQueryRow.Element("IsActive").Value == "1";
-
+                _treePos = treePos;
             }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+
+            _alias = tObjectQueryRow.Element("Alias").Value;
+            _runState = tObjectQueryRow.Element("RunState").Value;
+
+            _version = tObjectQueryRow.Element("Version").Value;
+            _abstract = tObjectQueryRow.Element("Abstract").Value;
+            _complexity = tObjectQueryRow.Element("Complexity").Value;
+            _status = tObjectQueryRow.Element("Status").Value;
+            _visibility = tObjectQueryRow.Element("Visibility").Value;
+            _persistence = tObjectQueryRow.Element("Persistence").Value;
+            _gentype = tObjectQueryRow.Element("GenType").Value;
+            _genfile = tObjectQueryRow.Element("GenFile").Value;
+            _header1 = tObjectQueryRow.Element("Header1").Value;
+            _header2 = tObjectQueryRow.Element("Header2").Value;
+            _phase = tObjectQueryRow.Element("Phase").Value;
+            _genlinks = tObjectQueryRow.Element("GenLinks").Value;
+            _multiplicity = tObjectQueryRow.Element("Multiplicity").Value;
+            _actionFlags = tObjectQueryRow.Element("ActionFlags").Value;
+
+            // IsRoot is a write-only forwarding property with no backing field, so there is nothing to hydrate here.
+            _isLeaf = tObjectQueryRow.Element("IsLeaf").Value == "1";
+            _isSpec = tObjectQueryRow.Element("IsSpec").Value == "1";
+            _isActive = tObjectQueryRow.Element("IsActive").Value == "1";
         }
 
         public ElementDataModel(EAAPI.Element apiElement)
         {
-            TaggedValues = new TaggedValueCollection(this);
-            Attributes = new AttributeCollection(this);
+            _taggedValues = new TaggedValueCollection(this);
+            _attributes = new AttributeCollection(this);
 
             _apiElement = apiElement;
 
-            ElementID = apiElement.ElementID;
-            Type = apiElement.Type;
-            Name = apiElement.Name;
-            Notes = apiElement.Notes;
-            PackageID = apiElement.PackageID;
-            Stereotype = apiElement.Stereotype;
-            ElementGUID = apiElement.ElementGUID;
-            ParentID = apiElement.ParentID;
-            Created = apiElement.Created;
-            Modified = apiElement.Modified;
-            ClassifierID = apiElement.ClassifierID;
-            TreePos = apiElement.TreePos;
-            Abstract = apiElement.Abstract;
-            Alias = apiElement.Alias;
-            RunState = apiElement.RunState;
+            _elementID = apiElement.ElementID;
+            _type = apiElement.Type;
+            _name = apiElement.Name;
+            _notes = apiElement.Notes;
+            _packageID = apiElement.PackageID;
+            _stereotype = apiElement.Stereotype;
+            _elementGUID = apiElement.ElementGUID;
+            _parentID = apiElement.ParentID;
+            _created = apiElement.Created;
+            _modified = apiElement.Modified;
+            _classifierID = apiElement.ClassifierID;
+            _treePos = apiElement.TreePos;
+            _abstract = apiElement.Abstract;
+            _alias = apiElement.Alias;
+            _runState = apiElement.RunState;
 
-            Version = apiElement.Version;
-            Complexity = apiElement.Complexity;
-            Status = apiElement.Status;
-            Visibility = apiElement.Visibility;
-            Persistence = apiElement.Persistence;
-            Gentype = apiElement.Gentype;
-            Genfile = apiElement.Genfile;
-            Header1 = apiElement.Header1;
-            Header2 = apiElement.Header2;
-            Phase = apiElement.Phase;
-            Genlinks = apiElement.Genlinks;
-            Multiplicity = apiElement.Multiplicity;
-            ActionFlags = apiElement.ActionFlags;
+            _version = apiElement.Version;
+            _complexity = apiElement.Complexity;
+            _status = apiElement.Status;
+            _visibility = apiElement.Visibility;
+            _persistence = apiElement.Persistence;
+            _gentype = apiElement.Gentype;
+            _genfile = apiElement.Genfile;
+            _header1 = apiElement.Header1;
+            _header2 = apiElement.Header2;
+            _phase = apiElement.Phase;
+            _genlinks = apiElement.Genlinks;
+            _multiplicity = apiElement.Multiplicity;
+            _actionFlags = apiElement.ActionFlags;
 
-            IsLeaf = apiElement.IsLeaf;
-            IsSpec = apiElement.IsSpec;
-            IsActive = apiElement.IsActive;
-
+            _isLeaf = apiElement.IsLeaf;
+            _isSpec = apiElement.IsSpec;
+            _isActive = apiElement.IsActive;
         }
 
         private EAAPI.Element? _apiElement;
@@ -231,9 +219,35 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int ElementID { get; set; }
+        private int _elementID;
 
-        public string ElementGUID { get; set; } = "";
+        public int ElementID
+        {
+            get
+            {
+                return _elementID;
+            }
+
+            set
+            {
+                _elementID = value;
+            }
+        }
+
+        private string _elementGUID = "";
+
+        public string ElementGUID
+        {
+            get
+            {
+                return _elementGUID;
+            }
+
+            set
+            {
+                _elementGUID = value;
+            }
+        }
 
         private int _packageID;
 
@@ -312,7 +326,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public GenericCollection<TaggedValue> TaggedValues { get; set; }
+        private GenericCollection<TaggedValue> _taggedValues = null!;
+
+        public GenericCollection<TaggedValue> TaggedValues
+        {
+            get
+            {
+                return _taggedValues;
+            }
+
+            set
+            {
+                _taggedValues = value;
+            }
+        }
 
         private string _abstract = "";
 
@@ -376,9 +403,35 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public int AssociationClassConnectorID => throw new NotImplementedException();
 
-        public Collection Attributes { get; set; }
+        private Collection _attributes = null!;
 
-        public Collection AttributesEx { get; set; } = new GenericCollection<DataModels.Contracts.Attribute>();
+        public Collection Attributes
+        {
+            get
+            {
+                return _attributes;
+            }
+
+            set
+            {
+                _attributes = value;
+            }
+        }
+
+        private Collection _attributesEx = new GenericCollection<DataModels.Contracts.Attribute>();
+
+        public Collection AttributesEx
+        {
+            get
+            {
+                return _attributesEx;
+            }
+
+            set
+            {
+                _attributesEx = value;
+            }
+        }
 
         private string _author = "";
 
@@ -871,7 +924,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public Collection MethodsEx { get; set; } = new GenericCollection<Method>();
+        private Collection _methodsEx = new GenericCollection<Method>();
+
+        public Collection MethodsEx
+        {
+            get
+            {
+                return _methodsEx;
+            }
+
+            set
+            {
+                _methodsEx = value;
+            }
+        }
 
         public Collection Metrics => throw new NotImplementedException();
 
@@ -921,15 +987,80 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 
         public Collection Partitions => throw new NotImplementedException();
 
-        private string Pdata1 { get; set; } = string.Empty;
+        private string _pdata1 = string.Empty;
 
-        private string Pdata2 { get; set; } = string.Empty;
+        private string Pdata1
+        {
+            get
+            {
+                return _pdata1;
+            }
 
-        private string Pdata3 { get; set; } = string.Empty;
+            set
+            {
+                _pdata1 = value;
+            }
+        }
 
-        private string Pdata4 { get; set; } = string.Empty;
+        private string _pdata2 = string.Empty;
 
-        private string Pdata5 { get; set; } = string.Empty;
+        private string Pdata2
+        {
+            get
+            {
+                return _pdata2;
+            }
+
+            set
+            {
+                _pdata2 = value;
+            }
+        }
+
+        private string _pdata3 = string.Empty;
+
+        private string Pdata3
+        {
+            get
+            {
+                return _pdata3;
+            }
+
+            set
+            {
+                _pdata3 = value;
+            }
+        }
+
+        private string _pdata4 = string.Empty;
+
+        private string Pdata4
+        {
+            get
+            {
+                return _pdata4;
+            }
+
+            set
+            {
+                _pdata4 = value;
+            }
+        }
+
+        private string _pdata5 = string.Empty;
+
+        private string Pdata5
+        {
+            get
+            {
+                return _pdata5;
+            }
+
+            set
+            {
+                _pdata5 = value;
+            }
+        }
 
         private string _persistence = "";
 

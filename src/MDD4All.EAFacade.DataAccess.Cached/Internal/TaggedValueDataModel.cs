@@ -1,5 +1,4 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -8,8 +7,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class TaggedValueDataModel : RepositoryElementDataModel, TaggedValue
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public TaggedValueDataModel()
         {
 
@@ -19,31 +16,24 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             Repository = repository;
 
-            try
-            {
-                Name = tObjectPropertiesRow.Element("Property").Value;
-                Notes = tObjectPropertiesRow.Element("Notes").Value;
-                Value = tObjectPropertiesRow.Element("Value").Value;
-                PropertyID = int.Parse(tObjectPropertiesRow.Element("PropertyID").Value);
-                PropertyGUID = tObjectPropertiesRow.Element("ea_guid").Value;
-                ElementID = int.Parse(tObjectPropertiesRow.Element("Object_ID").Value);
-            }
-            catch(Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _name = tObjectPropertiesRow.Element("Property").Value;
+            _notes = tObjectPropertiesRow.Element("Notes").Value;
+            _value = tObjectPropertiesRow.Element("Value").Value;
+            _propertyID = int.Parse(tObjectPropertiesRow.Element("PropertyID").Value);
+            _propertyGUID = tObjectPropertiesRow.Element("ea_guid").Value;
+            _elementID = int.Parse(tObjectPropertiesRow.Element("Object_ID").Value);
         }
 
         public TaggedValueDataModel(EAAPI.TaggedValue apiTaggedValue)
         {
             _apiTaggedValue = apiTaggedValue;
 
-            Name = apiTaggedValue.Name;
-            Notes = apiTaggedValue.Notes;
-            Value = apiTaggedValue.Value;
-            ElementID = apiTaggedValue.ElementID;
-            PropertyID = apiTaggedValue.PropertyID;
-            PropertyGUID = apiTaggedValue.PropertyGUID;
+            _name = apiTaggedValue.Name;
+            _notes = apiTaggedValue.Notes;
+            _value = apiTaggedValue.Value;
+            _elementID = apiTaggedValue.ElementID;
+            _propertyID = apiTaggedValue.PropertyID;
+            _propertyGUID = apiTaggedValue.PropertyGUID;
         }
 
         private EAAPI.TaggedValue? _apiTaggedValue;
@@ -160,7 +150,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string FQName { get; set; } = "";
+        private string _fqName = "";
+
+        public string FQName
+        {
+            get
+            {
+                return _fqName;
+            }
+
+            set
+            {
+                _fqName = value;
+            }
+        }
 
         public ObjectType ObjectType
         {
@@ -192,7 +195,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int PropertyID { get; set; }
+        private int _propertyID;
+
+        public int PropertyID
+        {
+            get
+            {
+                return _propertyID;
+            }
+
+            set
+            {
+                _propertyID = value;
+            }
+        }
 
         public string GetAttribute(string PropName)
         {

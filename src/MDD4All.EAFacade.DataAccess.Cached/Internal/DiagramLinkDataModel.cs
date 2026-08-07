@@ -1,5 +1,4 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -8,8 +7,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class DiagramLinkDataModel : RepositoryElementDataModel, DiagramLink
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public DiagramLinkDataModel()
         {
 
@@ -19,36 +16,26 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             Repository = repository;
 
-            try
-            {
-                DiagramID = int.Parse(tObjectQueryRow.Element("DiagramID").Value);
-                ConnectorID = int.Parse(tObjectQueryRow.Element("ConnectorID").Value);
-                Geometry = tObjectQueryRow.Element("Geometry").Value;
-                Style = tObjectQueryRow.Element("Style").Value;
-                IsHidden = bool.Parse(tObjectQueryRow.Element("Hidden").Value);
-                Path = tObjectQueryRow.Element("Path").Value;
-                InstanceID = int.Parse(tObjectQueryRow.Element("Instance_ID").Value);
-
-
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _diagramID = int.Parse(tObjectQueryRow.Element("DiagramID").Value);
+            _connectorID = int.Parse(tObjectQueryRow.Element("ConnectorID").Value);
+            _geometry = tObjectQueryRow.Element("Geometry").Value;
+            _style = tObjectQueryRow.Element("Style").Value;
+            _isHidden = bool.Parse(tObjectQueryRow.Element("Hidden").Value);
+            _path = tObjectQueryRow.Element("Path").Value;
+            _instanceID = int.Parse(tObjectQueryRow.Element("Instance_ID").Value);
         }
 
         public DiagramLinkDataModel(EAAPI.DiagramLink apiDiagramLink)
         {
             _apiDiagramLink = apiDiagramLink;
 
-            DiagramID = apiDiagramLink.DiagramID;
-            ConnectorID = apiDiagramLink.ConnectorID;
-            Geometry = apiDiagramLink.Geometry;
-            Style = apiDiagramLink.Style;
-            IsHidden = apiDiagramLink.IsHidden;
-            Path = apiDiagramLink.Path;
-            InstanceID = apiDiagramLink.InstanceID;
-
+            _diagramID = apiDiagramLink.DiagramID;
+            _connectorID = apiDiagramLink.ConnectorID;
+            _geometry = apiDiagramLink.Geometry;
+            _style = apiDiagramLink.Style;
+            _isHidden = apiDiagramLink.IsHidden;
+            _path = apiDiagramLink.Path;
+            _instanceID = apiDiagramLink.InstanceID;
         }
 
         private EAAPI.DiagramLink? _apiDiagramLink;

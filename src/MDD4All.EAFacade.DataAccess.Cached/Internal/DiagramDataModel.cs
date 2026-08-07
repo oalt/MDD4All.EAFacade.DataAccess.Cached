@@ -1,6 +1,5 @@
 using MDD4All.EAFacade.DataModels.Contracts;
 using MDD4All.EAFacade.DataAccess.Cached.Internal.Collections;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -9,114 +8,104 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class DiagramDataModel : RepositoryElementDataModel, Diagram
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public DiagramDataModel()
         {
-            DiagramObjects = new DiagramObjectCollection(this);
-            DiagramLinks = new DiagramLinkCollection(this);
+            _diagramObjects = new DiagramObjectCollection(this);
+            _diagramLinks = new DiagramLinkCollection(this);
         }
 
         public DiagramDataModel(XElement tObjectQueryRow, Repository repository)
         {
-            DiagramObjects = new DiagramObjectCollection(this);
-            DiagramLinks = new DiagramLinkCollection(this);
+            _diagramObjects = new DiagramObjectCollection(this);
+            _diagramLinks = new DiagramLinkCollection(this);
 
             Repository = repository;
 
-            try
+            _diagramID = int.Parse(tObjectQueryRow.Element("Diagram_ID").Value);
+            _packageID = int.Parse(tObjectQueryRow.Element("Package_ID").Value);
+            _parentID = int.Parse(tObjectQueryRow.Element("ParentID").Value);
+            _type = tObjectQueryRow.Element("Diagram_Type").Value;
+            _name = tObjectQueryRow.Element("Name").Value;
+            _version = tObjectQueryRow.Element("Version").Value;
+            _author = tObjectQueryRow.Element("Author").Value;
+
+            int showDetails = 0;
+
+            if (int.TryParse(tObjectQueryRow.Element("ShowDetails").Value, out showDetails))
             {
-                DiagramID = int.Parse(tObjectQueryRow.Element("Diagram_ID").Value);
-                PackageID = int.Parse(tObjectQueryRow.Element("Package_ID").Value);
-                ParentID = int.Parse(tObjectQueryRow.Element("ParentID").Value);
-                Type = tObjectQueryRow.Element("Diagram_Type").Value;
-                Name = tObjectQueryRow.Element("Name").Value;
-                Version = tObjectQueryRow.Element("Version").Value;
-                Author = tObjectQueryRow.Element("Author").Value;
-
-                int showDetails = 0;
-
-                if (int.TryParse(tObjectQueryRow.Element("ShowDetails").Value, out showDetails))
-                {
-                    ShowDetails = showDetails;
-                }
-
-                Notes = tObjectQueryRow.Element("Notes").Value;
-
-                Stereotype = tObjectQueryRow.Element("Stereotype").Value;
-                DiagramGUID = tObjectQueryRow.Element("ea_guid").Value;
-
-                int cx = 0;
-
-                if (int.TryParse(tObjectQueryRow.Element("cx").Value, out cx))
-                {
-                    this.cx = cx;
-                }
-
-                int cy = 0;
-
-                if (int.TryParse(tObjectQueryRow.Element("cy").Value, out cy))
-                {
-                    this.cy = cy;
-                }
-
-                CreatedDate = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
-                ModifiedDate = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
-
-                StyleEx = tObjectQueryRow.Element("StyleEx").Value;
-
-                ShowPublic = tObjectQueryRow.Element("AttPub").Value == "1";
-                ShowPrivate = tObjectQueryRow.Element("AttPri").Value == "1";
-                ShowProtected = tObjectQueryRow.Element("AttPro").Value == "1";
-                Orientation = tObjectQueryRow.Element("Orientation").Value;
-                ShowPackageContents = tObjectQueryRow.Element("ShowPackageContents").Value == "1";
-                IsLocked = tObjectQueryRow.Element("Locked").Value == "1";
-
-                int scale = 0;
-
-                if (int.TryParse(tObjectQueryRow.Element("Scale").Value, out scale))
-                {
-                    Scale = scale;
-                }
-
+                _showDetails = showDetails;
             }
-            catch (Exception exception)
+
+            _notes = tObjectQueryRow.Element("Notes").Value;
+
+            _stereotype = tObjectQueryRow.Element("Stereotype").Value;
+            _diagramGUID = tObjectQueryRow.Element("ea_guid").Value;
+
+            int cx = 0;
+
+            if (int.TryParse(tObjectQueryRow.Element("cx").Value, out cx))
             {
-                logger.Debug(exception);
+                _cx = cx;
+            }
+
+            int cy = 0;
+
+            if (int.TryParse(tObjectQueryRow.Element("cy").Value, out cy))
+            {
+                _cy = cy;
+            }
+
+            _createdDate = DateTime.Parse(tObjectQueryRow.Element("CreatedDate").Value);
+            _modifiedDate = DateTime.Parse(tObjectQueryRow.Element("ModifiedDate").Value);
+
+            _styleEx = tObjectQueryRow.Element("StyleEx").Value;
+
+            _showPublic = tObjectQueryRow.Element("AttPub").Value == "1";
+            _showPrivate = tObjectQueryRow.Element("AttPri").Value == "1";
+            _showProtected = tObjectQueryRow.Element("AttPro").Value == "1";
+            _orientation = tObjectQueryRow.Element("Orientation").Value;
+            _showPackageContents = tObjectQueryRow.Element("ShowPackageContents").Value == "1";
+            _isLocked = tObjectQueryRow.Element("Locked").Value == "1";
+
+            int scale = 0;
+
+            if (int.TryParse(tObjectQueryRow.Element("Scale").Value, out scale))
+            {
+                _scale = scale;
             }
         }
 
         public DiagramDataModel(EAAPI.Diagram apiDiagram)
         {
-            DiagramObjects = new DiagramObjectCollection(this);
-            DiagramLinks = new DiagramLinkCollection(this);
+            _diagramObjects = new DiagramObjectCollection(this);
+            _diagramLinks = new DiagramLinkCollection(this);
 
             _apiDiagram = apiDiagram;
 
-            DiagramID = apiDiagram.DiagramID;
-            Type = apiDiagram.Type;
-            Name = apiDiagram.Name;
-            Notes = apiDiagram.Notes;
-            PackageID = apiDiagram.PackageID;
-            Stereotype = apiDiagram.Stereotype;
-            DiagramGUID = apiDiagram.DiagramGUID;
-            ParentID = apiDiagram.ParentID;
-            Version = apiDiagram.Version;
-            Author = apiDiagram.Author;
-            ShowDetails = apiDiagram.ShowDetails;
-            PageWidth = apiDiagram.PageWidth;
-            PageHeight = apiDiagram.PageHeight;
-            CreatedDate = apiDiagram.CreatedDate;
-            ModifiedDate = apiDiagram.ModifiedDate;
-            StyleEx = apiDiagram.StyleEx;
+            _diagramID = apiDiagram.DiagramID;
+            _type = apiDiagram.Type;
+            _name = apiDiagram.Name;
+            _notes = apiDiagram.Notes;
+            _packageID = apiDiagram.PackageID;
+            _stereotype = apiDiagram.Stereotype;
+            _diagramGUID = apiDiagram.DiagramGUID;
+            _parentID = apiDiagram.ParentID;
+            _version = apiDiagram.Version;
+            _author = apiDiagram.Author;
+            _showDetails = apiDiagram.ShowDetails;
+            _pageWidth = apiDiagram.PageWidth;
+            _pageHeight = apiDiagram.PageHeight;
+            _createdDate = apiDiagram.CreatedDate;
+            _modifiedDate = apiDiagram.ModifiedDate;
+            _styleEx = apiDiagram.StyleEx;
 
-            ShowPublic = apiDiagram.ShowPublic;
-            ShowPrivate = apiDiagram.ShowPrivate;
-            ShowProtected = apiDiagram.ShowProtected;
-            Orientation = apiDiagram.Orientation;
-            ShowPackageContents = apiDiagram.ShowPackageContents;
-            IsLocked = apiDiagram.IsLocked;
-            Scale = apiDiagram.Scale;
+            _showPublic = apiDiagram.ShowPublic;
+            _showPrivate = apiDiagram.ShowPrivate;
+            _showProtected = apiDiagram.ShowProtected;
+            _orientation = apiDiagram.Orientation;
+            _showPackageContents = apiDiagram.ShowPackageContents;
+            _isLocked = apiDiagram.IsLocked;
+            _scale = apiDiagram.Scale;
         }
 
         private EAAPI.Diagram? _apiDiagram;
@@ -239,11 +228,50 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int DiagramID { get; private set; }
+        private int _diagramID;
 
-        public GenericCollection<DiagramLink> DiagramLinks { get; set; }
+        public int DiagramID
+        {
+            get
+            {
+                return _diagramID;
+            }
 
-        public GenericCollection<DiagramObject> DiagramObjects { get; set; }
+            private set
+            {
+                _diagramID = value;
+            }
+        }
+
+        private GenericCollection<DiagramLink> _diagramLinks = null!;
+
+        public GenericCollection<DiagramLink> DiagramLinks
+        {
+            get
+            {
+                return _diagramLinks;
+            }
+
+            set
+            {
+                _diagramLinks = value;
+            }
+        }
+
+        private GenericCollection<DiagramObject> _diagramObjects = null!;
+
+        public GenericCollection<DiagramObject> DiagramObjects
+        {
+            get
+            {
+                return _diagramObjects;
+            }
+
+            set
+            {
+                _diagramObjects = value;
+            }
+        }
 
         private string _extendedStyle = "";
 
@@ -447,9 +475,35 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int PageHeight { get; set; }
+        private int _pageHeight;
 
-        public int PageWidth { get; set; }
+        public int PageHeight
+        {
+            get
+            {
+                return _pageHeight;
+            }
+
+            set
+            {
+                _pageHeight = value;
+            }
+        }
+
+        private int _pageWidth;
+
+        public int PageWidth
+        {
+            get
+            {
+                return _pageWidth;
+            }
+
+            set
+            {
+                _pageWidth = value;
+            }
+        }
 
         private int _parentID;
 
@@ -677,7 +731,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public string Type { get; set; } = "";
+        private string _type = "";
+
+        public string Type
+        {
+            get
+            {
+                return _type;
+            }
+
+            set
+            {
+                _type = value;
+            }
+        }
 
         private string _version = "";
 

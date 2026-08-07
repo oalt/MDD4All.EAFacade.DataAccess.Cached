@@ -1,5 +1,4 @@
 using MDD4All.EAFacade.DataModels.Contracts;
-using NLog;
 using System;
 using System.Xml.Linq;
 using EAAPI = EA;
@@ -8,8 +7,6 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
 {
     internal class ParameterDataModel : RepositoryElementDataModel, Parameter
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
         public ParameterDataModel()
         {
         }
@@ -18,46 +15,39 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
         {
             Repository = repository;
 
-            try
-            {
-                OperationID = int.Parse(parameterRow.Element("OperationID").Value);
-                Name = parameterRow.Element("Name").Value;
-                Type = parameterRow.Element("Type").Value;
-                Default = parameterRow.Element("Default").Value;
-                Notes = parameterRow.Element("Notes").Value;
-                Position = int.Parse(parameterRow.Element("Pos").Value);
-                IsConst = parameterRow.Element("Const").Value == "1";
-                Style = parameterRow.Element("Style").Value;
-                Kind = parameterRow.Element("Kind").Value;
-                ClassifierID = parameterRow.Element("Classifier").Value;
-                ParameterGUID = parameterRow.Element("ea_guid").Value;
-                StyleEx = parameterRow.Element("StyleEx").Value;
+            _operationID = int.Parse(parameterRow.Element("OperationID").Value);
+            _name = parameterRow.Element("Name").Value;
+            _type = parameterRow.Element("Type").Value;
+            _default = parameterRow.Element("Default").Value;
+            _notes = parameterRow.Element("Notes").Value;
+            _position = int.Parse(parameterRow.Element("Pos").Value);
+            _isConst = parameterRow.Element("Const").Value == "1";
+            _style = parameterRow.Element("Style").Value;
+            _kind = parameterRow.Element("Kind").Value;
+            _classifierID = parameterRow.Element("Classifier").Value;
+            _parameterGUID = parameterRow.Element("ea_guid").Value;
+            _styleEx = parameterRow.Element("StyleEx").Value;
 
-                Alias = GetStyleExValue(StyleEx, "alias");
-            }
-            catch (Exception exception)
-            {
-                logger.Debug(exception);
-            }
+            _alias = GetStyleExValue(StyleEx, "alias");
         }
 
         public ParameterDataModel(EAAPI.Parameter apiParameter)
         {
             _apiParameter = apiParameter;
 
-            OperationID = apiParameter.OperationID;
-            Name = apiParameter.Name;
-            Type = apiParameter.Type;
-            Default = apiParameter.Default;
-            Notes = apiParameter.Notes;
-            Position = apiParameter.Position;
-            IsConst = apiParameter.IsConst;
-            Style = apiParameter.Style;
-            Kind = apiParameter.Kind;
-            ClassifierID = apiParameter.ClassifierID;
-            ParameterGUID = apiParameter.ParameterGUID;
-            StyleEx = apiParameter.StyleEx;
-            Alias = apiParameter.Alias;
+            _operationID = apiParameter.OperationID;
+            _name = apiParameter.Name;
+            _type = apiParameter.Type;
+            _default = apiParameter.Default;
+            _notes = apiParameter.Notes;
+            _position = apiParameter.Position;
+            _isConst = apiParameter.IsConst;
+            _style = apiParameter.Style;
+            _kind = apiParameter.Kind;
+            _classifierID = apiParameter.ClassifierID;
+            _parameterGUID = apiParameter.ParameterGUID;
+            _styleEx = apiParameter.StyleEx;
+            _alias = apiParameter.Alias;
         }
 
         private static string GetStyleExValue(string styleEx, string key)
@@ -90,7 +80,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             return result;
         }
 
-        internal int ParentElementID { get; set; }
+        private int _parentElementID;
+
+        internal int ParentElementID
+        {
+            get
+            {
+                return _parentElementID;
+            }
+
+            set
+            {
+                _parentElementID = value;
+            }
+        }
 
         private EAAPI.Parameter? _apiParameter;
 
@@ -284,7 +287,20 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             }
         }
 
-        public int OperationID { get; set; }
+        private int _operationID;
+
+        public int OperationID
+        {
+            get
+            {
+                return _operationID;
+            }
+
+            set
+            {
+                _operationID = value;
+            }
+        }
 
         private string _parameterGUID = "";
 
