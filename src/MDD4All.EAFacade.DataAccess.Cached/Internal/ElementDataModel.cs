@@ -56,6 +56,16 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             _alias = tObjectQueryRow.Element("Alias").Value;
             _runState = tObjectQueryRow.Element("RunState").Value;
 
+            // The Automation API's Element.Subtype is backed by t_object's "NType" column, not a
+            // column literally named "SubType" (confirmed by dumping the actual columns returned
+            // by "select * from t_object" - there is no "SubType" column at all).
+            int subtype = 0;
+
+            if (int.TryParse(tObjectQueryRow.Element("NType").Value, out subtype))
+            {
+                _subtype = subtype;
+            }
+
             _version = tObjectQueryRow.Element("Version").Value;
             _abstract = tObjectQueryRow.Element("Abstract").Value;
             _complexity = tObjectQueryRow.Element("Complexity").Value;
@@ -99,6 +109,7 @@ namespace MDD4All.EAFacade.DataAccess.Cached.Internal
             _abstract = apiElement.Abstract;
             _alias = apiElement.Alias;
             _runState = apiElement.RunState;
+            _subtype = apiElement.Subtype;
 
             _version = apiElement.Version;
             _complexity = apiElement.Complexity;
